@@ -34,14 +34,14 @@ export class RestaurantsController {
 
   @Put(':id')
   async updateRestaurant(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Body() updateRestaurantDto: CreateRestaurantDto,
   ): Promise<Restaurant> {
-    return this.restaurantsService.updateRestaurant(+id, updateRestaurantDto);
+    return this.restaurantsService.updateRestaurant(id, updateRestaurantDto);
   }
 
   @Delete(':id')
-  async deleteRestaurant(@Param('id') id: string): Promise<void> {
-    return this.restaurantsService.deleteRestaurant(+id);
+  async deleteRestaurant(@Param('id') id: number): Promise<void> {
+    return this.restaurantsService.deleteRestaurant(id);
   }
 }

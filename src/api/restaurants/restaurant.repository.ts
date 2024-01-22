@@ -1,7 +1,8 @@
-import { Repository, DataSource } from 'typeorm';
-import { Injectable } from '@nestjs/common';
-import { Restaurant } from './restaurant.entity';
+import { DataSource, Repository } from 'typeorm';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateRestaurantDto } from './dtos/create-restaurant.dto';
+import { Restaurant } from './restaurant.entity';
+import { RESTAURANT_NOT_FOUND } from '../../assets/messages';
 
 @Injectable()
 export class RestaurantRepository extends Repository<Restaurant> {
@@ -13,7 +14,8 @@ export class RestaurantRepository extends Repository<Restaurant> {
     createRestaurantDto: CreateRestaurantDto,
   ): Promise<Restaurant> {
     const { name, rating, location } = createRestaurantDto;
-    return this.save({ name, rating, location });
+    const restaurant = this.create({ name, rating, location });
+    return this.save(restaurant);
   }
 
   async getAllRestaurants(): Promise<Restaurant[]> {
@@ -28,11 +30,19 @@ export class RestaurantRepository extends Repository<Restaurant> {
     id: number,
     updateRestaurantDto: CreateRestaurantDto,
   ): Promise<Restaurant | undefined> {
-    await this.save({ id, ...updateRestaurantDto });
+    const result = await this.update(id, updateRestaurantDto);
+
+    if (result.affected === 0) {
+      return undefined;
+    }
+
     return this.getRestaurantById(id);
   }
 
   async deleteRestaurant(id: number): Promise<void> {
-    await this.delete(id);
+    const result = await this.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(RESTAURANT_NOT_FOUND(id));
+    }
   }
 }
