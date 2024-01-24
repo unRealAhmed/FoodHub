@@ -4,8 +4,8 @@ import {
   Post,
   Body,
   Param,
-  Put,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { RestaurantsService } from './restaurants.service';
 import { CreateRestaurantDto } from './dtos/create-restaurant.dto';
@@ -15,6 +15,13 @@ import { Restaurant } from './restaurant.entity';
 export class RestaurantsController {
   constructor(private readonly restaurantsService: RestaurantsService) {}
 
+  @Post()
+  async createRestaurant(
+    @Body() createRestaurantDto: CreateRestaurantDto,
+  ): Promise<Restaurant> {
+    return this.restaurantsService.create(createRestaurantDto);
+  }
+
   @Get()
   async getAllRestaurants(): Promise<Restaurant[]> {
     return this.restaurantsService.getAllRestaurants();
@@ -23,13 +30,6 @@ export class RestaurantsController {
   @Get(':id')
   async getRestaurantById(@Param('id') id: number): Promise<Restaurant> {
     return this.restaurantsService.getRestaurantById(id);
-  }
-
-  @Post()
-  async createRestaurant(
-    @Body() createRestaurantDto: CreateRestaurantDto,
-  ): Promise<Restaurant> {
-    return this.restaurantsService.create(createRestaurantDto);
   }
 
   @Put(':id')
