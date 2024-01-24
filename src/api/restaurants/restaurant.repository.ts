@@ -9,12 +9,7 @@ export class RestaurantRepository extends Repository<Restaurant> {
   constructor(private readonly dataSource: DataSource) {
     super(Restaurant, dataSource.createEntityManager());
   }
-
-  async createRestaurant(
-    createRestaurantDto: CreateRestaurantDto,
-  ): Promise<Restaurant> {
-    const { name, rating, location } = createRestaurantDto;
-    const restaurant = this.create({ name, rating, location });
+  async createRestaurant(restaurant: CreateRestaurantDto): Promise<Restaurant> {
     return this.save(restaurant);
   }
 
@@ -22,21 +17,22 @@ export class RestaurantRepository extends Repository<Restaurant> {
     return this.find();
   }
 
-  async getRestaurantById(id: number): Promise<Restaurant | undefined> {
+  async getRestaurantById(id: number): Promise<Restaurant | null> {
     return this.findOne({ where: { id } });
   }
 
   async updateRestaurant(
     id: number,
-    updateRestaurantDto: CreateRestaurantDto,
-  ): Promise<Restaurant | undefined> {
-    const result = await this.update(id, updateRestaurantDto);
+    restaurant: CreateRestaurantDto,
+  ): Promise<Restaurant | null> {
+    const result = await this.createQueryBuilder()
+      .update(Restaurant)
+      .set({ ...restaurant })
+      .where('id = :id', { id })
+      .returning('*')
+      .execute();
 
-    if (result.affected === 0) {
-      return undefined;
-    }
-
-    return this.getRestaurantById(id);
+    return result.raw[0] || null;
   }
 
   async deleteRestaurant(id: number): Promise<void> {
