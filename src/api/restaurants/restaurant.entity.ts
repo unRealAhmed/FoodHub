@@ -1,16 +1,23 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToOne,
+  JoinColumn,
+} from 'typeorm';
+import { Menu } from '../menus/menus.entity';
 
 @Entity()
 export class Restaurant {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column()
-  name: string;
+  name!: string;
 
   @Column({ type: 'float' })
-  rating: number;
+  rating!: number;
 
   @Column()
-  location: string;
+  location!: string;
 }
