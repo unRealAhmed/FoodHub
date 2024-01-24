@@ -1,11 +1,7 @@
-import {
-  Injectable,
-  NotFoundException,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { RestaurantRepository } from './restaurant.repository';
 import { Restaurant } from './restaurant.entity';
 import { CreateRestaurantDto } from './dtos/create-restaurant.dto';
-import { RestaurantRepository } from './restaurant.repository';
 import { RESTAURANT_NOT_FOUND } from '../../assets/messages';
 
 @Injectable()
@@ -45,12 +41,6 @@ export class RestaurantsService {
   }
 
   async deleteRestaurant(id: number): Promise<void> {
-    const restaurant = await this.getRestaurantById(id);
-
-    if (!restaurant) {
-      throw new NotFoundException(RESTAURANT_NOT_FOUND(id));
-    }
-
     await this.restaurantRepository.deleteRestaurant(id);
   }
 }
