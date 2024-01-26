@@ -4,11 +4,15 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { RestaurantsModule } from './api/restaurants/restaurants.module';
 import { MenusModule } from './api/menus/menus.module';
-import { ItemsModule } from './api/items/items.module';
-import { CategoriesModule } from './api/categories/categories.module';
+import { ItemModule } from './api/items/items.module';
+import { CategoryModule } from './api/categories/categories.module';
 import { ConfigModule } from '@nestjs/config';
 import { Restaurant } from './api/restaurants/restaurant.entity';
 import { Menu } from './api/menus/menus.entity';
+import { CategoryItemModule } from './api/category-item/category-item.module';
+import { Category } from './api/categories/categories.entity';
+import { Item } from './api/items/items.entity';
+import { CategoryItem } from './api/category-item/category-item.entity';
 
 @Module({
   imports: [
@@ -20,13 +24,14 @@ import { Menu } from './api/menus/menus.entity';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [Restaurant, Menu],
-      // synchronize: true,
+      entities: [Restaurant, Menu, Category, Item, CategoryItem],
+      synchronize: true,
     }),
     RestaurantsModule,
     MenusModule,
-    ItemsModule,
-    CategoriesModule,
+    ItemModule,
+    CategoryModule,
+    CategoryItemModule,
   ],
   controllers: [AppController],
   providers: [AppService],
