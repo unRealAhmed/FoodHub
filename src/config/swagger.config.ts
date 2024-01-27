@@ -8,6 +8,7 @@ export function setupSwagger(app: INestApplication) {
       'API for managing restaurants, menus, items, categories, and their associations.',
     )
     .setVersion('1.0')
+    .addServer('http://localhost:3000/', 'Local environment')
     .addTag('Restaurants', 'Endpoints related to restaurants')
     .addTag('Menus', 'Endpoints related to menus')
     .addTag('Categories', 'Endpoints related to categories')
