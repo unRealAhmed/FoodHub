@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { RestaurantsModule } from './api/restaurants/restaurants.module';
 import { MenusModule } from './api/menus/menus.module';
 import { ItemModule } from './api/items/items.module';
@@ -33,7 +31,5 @@ import { CategoryItem } from './api/category-item/category-item.entity';
     CategoryModule,
     CategoryItemModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
