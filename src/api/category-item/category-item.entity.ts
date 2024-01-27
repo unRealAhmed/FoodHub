@@ -1,4 +1,3 @@
-// category-item.entity.ts
 import { Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { Category } from '../categories/categories.entity';
 import { Item } from '../items/items.entity';
