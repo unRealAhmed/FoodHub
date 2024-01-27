@@ -30,7 +30,7 @@ FoodHub is currently under active development, and some features may not be full
 1. Clone the repository.
 2. Install dependencies with `npm install`.
 3. Set up your database configurations.
-4. Run the application with `npm run start`.
+4. Run the application with `npm run start:dev`.
 
 GitHub : [Ahmed Sayed](https://github.com/unRealAhmed)
 
