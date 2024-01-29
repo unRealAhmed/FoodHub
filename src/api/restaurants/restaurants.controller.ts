@@ -6,6 +6,8 @@ import {
   Param,
   Delete,
   Put,
+  HttpStatus,
+  HttpException,
 } from '@nestjs/common';
 import { RestaurantsService } from './restaurants.service';
 import { CreateRestaurantDto } from './dtos/create-restaurant.dto';
@@ -47,9 +49,11 @@ export class RestaurantsController {
   @ApiCreatedResponse({
     description: 'Restaurant created successfully.',
     type: Restaurant,
+    status: HttpStatus.CREATED,
   })
   @ApiBadRequestResponse({
     description: 'Bad request. Check the request body.',
+    status: HttpStatus.BAD_REQUEST,
   })
   async createRestaurant(
     @Body() createRestaurantDto: CreateRestaurantDto,
@@ -66,6 +70,7 @@ export class RestaurantsController {
     description: 'List of all restaurants.',
     type: Restaurant,
     isArray: true,
+    status: HttpStatus.OK,
   })
   async getAllRestaurants(): Promise<Restaurant[]> {
     return this.restaurantsService.getAllRestaurants();
@@ -79,9 +84,11 @@ export class RestaurantsController {
   @ApiOkResponse({
     description: 'Restaurant found.',
     type: Restaurant,
+    status: HttpStatus.OK,
   })
   @ApiNotFoundResponse({
     description: 'Restaurant not found.',
+    status: HttpStatus.NOT_FOUND,
   })
   @ApiParam({
     name: 'id',
@@ -111,9 +118,11 @@ export class RestaurantsController {
   @ApiOkResponse({
     description: 'Restaurant updated successfully.',
     type: Restaurant,
+    status: HttpStatus.OK,
   })
   @ApiNotFoundResponse({
     description: 'Restaurant not found.',
+    status: HttpStatus.NOT_FOUND,
   })
   @ApiParam({
     name: 'id',
@@ -133,15 +142,17 @@ export class RestaurantsController {
   })
   @ApiOkResponse({
     description: 'Restaurant deleted successfully.',
+    status: HttpStatus.NO_CONTENT,
   })
   @ApiNotFoundResponse({
     description: 'Restaurant not found.',
+    status: HttpStatus.NOT_FOUND,
   })
   @ApiParam({
     name: 'id',
     description: 'ID of the restaurant',
   })
   async deleteRestaurant(@Param('id') id: number): Promise<void> {
-    return this.restaurantsService.deleteRestaurant(id);
+    await this.restaurantsService.deleteRestaurant(id);
   }
 }
