@@ -86,7 +86,7 @@ describe('RestaurantsController (Integration)', () => {
       .delete(`/restaurants/${restaurantId}`)
       .expect(HttpStatus.NOT_FOUND);
 
-    const deletedResponse = await request(app.getHttpServer())
+    await request(app.getHttpServer())
       .get(`/restaurants/${restaurantId}`)
       .expect(HttpStatus.NOT_FOUND);
   });
