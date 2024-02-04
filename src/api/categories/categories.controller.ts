@@ -10,7 +10,6 @@ import {
 import { CategoryService } from './categories.service';
 import { CreateCategoryDto } from './dtos/create-category.dto';
 import { Category } from './categories.entity';
-import { CreateCategoryItemDto } from '../category-item/dtos/create-category-item.dto';
 
 import {
   ApiTags,
@@ -149,37 +148,6 @@ export class CategoriesController {
     return this.categoryService.deleteCategory(id);
   }
 
-  @Post('/associate-item')
-  @ApiOperation({
-    summary: 'Associate an item with a category',
-    description: 'Endpoint to associate an item with a category.',
-  })
-  @ApiBody({
-    type: CreateCategoryItemDto,
-    examples: {
-      example: {
-        value: {
-          categoryId: 1,
-          itemId: 2,
-        },
-      },
-    },
-  })
-  @ApiOkResponse({
-    description: 'Item associated with the category successfully.',
-    type: Category,
-  })
-  @ApiNotFoundResponse({
-    description: 'Category or item not found.',
-  })
-  async associateItemWithCategory(
-    @Body() createCategoryItemDto: CreateCategoryItemDto,
-  ): Promise<CategoryItem> {
-    return this.categoryService.associateItemWithCategory(
-      createCategoryItemDto,
-    );
-  }
-
   @Get(':categoryName/items')
   @ApiOperation({
     summary: 'Get all items in a category',
@@ -200,6 +168,7 @@ export class CategoriesController {
   async getAllItemsInCategory(
     @Param('categoryName') categoryName: string,
   ): Promise<CategoryItem[]> {
+    console.log(categoryName);
     return this.categoryService.getAllItemsInCategory(categoryName);
   }
 

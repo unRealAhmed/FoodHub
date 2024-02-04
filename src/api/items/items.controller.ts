@@ -18,7 +18,14 @@ import {
   ApiNotFoundResponse,
   ApiParam,
   ApiOperation,
+  ApiBadRequestResponse,
 } from '@nestjs/swagger';
+import { Category } from '../categories/categories.entity';
+import { CategoryService } from '../categories/categories.service';
+import { CreateCategoryDto } from '../categories/dtos/create-category.dto';
+import { CategoryItem } from '../category-item/category-item.entity';
+import { CategoryItemRepository } from '../category-item/category-item.repository';
+import { CreateCategoryItemDto } from '../category-item/dtos/create-category-item.dto';
 
 @Controller('items')
 @ApiTags('Items')
@@ -104,5 +111,161 @@ export class ItemsController {
   })
   async deleteItem(@Param('id') id: number): Promise<void> {
     return this.itemsService.deleteItem(id);
+  }
+}
+
+@Controller('categories')
+@ApiTags('Categories')
+export class CategoriesController {
+  constructor(
+    private readonly categoryService: CategoryService,
+    private readonly categoryItemRepository: CategoryItemRepository,
+  ) {}
+
+  @Get()
+  @ApiOperation({
+    summary: 'Get all categories',
+    description: 'Endpoint to retrieve a list of all categories.',
+  })
+  @ApiOkResponse({
+    description: 'List of all categories.',
+    type: Category,
+    isArray: true,
+  })
+  async getAllCategories(): Promise<Category[]> {
+    return this.categoryService.getAllCategories();
+  }
+
+  @Get(':name')
+  @ApiOperation({
+    summary: 'Get a category by name',
+    description: 'Endpoint to retrieve a category by its name.',
+  })
+  @ApiOkResponse({
+    description: 'Category found.',
+    type: Category,
+  })
+  @ApiNotFoundResponse({
+    description: 'Category not found.',
+  })
+  @ApiParam({
+    name: 'name',
+    description: 'The name of the category.',
+  })
+  async getCategoryByName(
+    @Param('name') name: string,
+  ): Promise<Category | null> {
+    return this.categoryService.getCategoryByName(name);
+  }
+
+  @Post()
+  @ApiOperation({
+    summary: 'Create a new category',
+    description: 'Endpoint to create a new category.',
+  })
+  @ApiBody({
+    type: CreateCategoryDto,
+    examples: {
+      example: {
+        value: {
+          name: 'Desserts',
+        },
+      },
+    },
+  })
+  @ApiCreatedResponse({
+    description: 'Category created successfully.',
+    type: Category,
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad request. Check the request body.',
+  })
+  async createCategory(
+    @Body() createCategoryDto: CreateCategoryDto,
+  ): Promise<Category> {
+    return this.categoryService.createCategory(createCategoryDto);
+  }
+
+  @Put(':id')
+  @ApiOperation({
+    summary: 'Update a category by ID',
+    description: 'Endpoint to update a category by its ID.',
+  })
+  @ApiBody({
+    type: CreateCategoryDto,
+    examples: {
+      example: {
+        value: {
+          name: 'Updated Desserts',
+        },
+      },
+    },
+  })
+  @ApiOkResponse({
+    description: 'Category updated successfully.',
+    type: Category,
+  })
+  @ApiNotFoundResponse({
+    description: 'Category not found.',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'The ID of the category.',
+  })
+  async updateCategory(
+    @Param('id') id: number,
+    @Body() updateCategoryDto: CreateCategoryDto,
+  ): Promise<Category> {
+    return this.categoryService.updateCategory(id, updateCategoryDto);
+  }
+
+  @Delete(':id')
+  @ApiOperation({
+    summary: 'Delete a category by ID',
+    description: 'Endpoint to delete a category by its ID.',
+  })
+  @ApiOkResponse({
+    description: 'Category deleted successfully.',
+  })
+  @ApiNotFoundResponse({
+    description: 'Category not found.',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'The ID of the category.',
+  })
+  async deleteCategory(@Param('id') id: number): Promise<void> {
+    return this.categoryService.deleteCategory(id);
+  }
+
+  @Post('/associate-item')
+  @ApiOperation({
+    summary: 'Associate an item with a category',
+    description: 'Endpoint to associate an item with a category.',
+  })
+  @ApiBody({
+    type: CreateCategoryItemDto,
+    examples: {
+      example: {
+        value: {
+          categoryId: 1,
+          itemId: 2,
+        },
+      },
+    },
+  })
+  @ApiOkResponse({
+    description: 'Item associated with the category successfully.',
+    type: Category,
+  })
+  @ApiNotFoundResponse({
+    description: 'Category or item not found.',
+  })
+  async associateItemWithCategory(
+    @Body() createCategoryItemDto: CreateCategoryItemDto,
+  ): Promise<CategoryItem> {
+    return this.categoryService.associateItemWithCategory(
+      createCategoryItemDto,
+    );
   }
 }

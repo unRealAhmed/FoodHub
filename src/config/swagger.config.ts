@@ -13,7 +13,6 @@ export function setupSwagger(app: INestApplication) {
     .addTag('Menus', 'Endpoints related to menus')
     .addTag('Categories', 'Endpoints related to categories')
     .addTag('Items', 'Endpoints related to items')
-    .addTag('Category Items', 'Endpoints related to category items')
     .build();
 
   const document = SwaggerModule.createDocument(app, options);

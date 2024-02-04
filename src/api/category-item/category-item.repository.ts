@@ -1,7 +1,6 @@
 import { DataSource, DeepPartial, Repository } from 'typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CategoryItem } from './category-item.entity';
-import { CreateCategoryItemDto } from './dtos/create-category-item.dto';
 
 @Injectable()
 export class CategoryItemRepository extends Repository<CategoryItem> {

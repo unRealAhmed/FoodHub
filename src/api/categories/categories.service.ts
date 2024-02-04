@@ -82,10 +82,7 @@ export class CategoryService {
     );
   }
 
-  async deleteItemFromCategory(
-    categoryId: number,
-    itemId: number,
-  ): Promise<void> {
+  async deleteItemFromCategory(itemId: number): Promise<void> {
     await this.categoryItemRepository.deleteItemOnSpecificCategory(itemId);
   }
 }
