@@ -191,10 +191,7 @@ export class CategoriesController {
     name: 'itemId',
     description: 'The ID of the item to delete.',
   })
-  async deleteItemFromCategory(
-    @Param('categoryId') categoryId: number,
-    @Param('itemId') itemId: number,
-  ): Promise<void> {
+  async deleteItemFromCategory(@Param('itemId') itemId: number): Promise<void> {
     return this.categoryItemRepository.deleteItemOnSpecificCategory(itemId);
   }
 }

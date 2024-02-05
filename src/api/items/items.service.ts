@@ -3,11 +3,24 @@ import { ItemsRepository } from './items.repository';
 import { UpdateItemDto } from './dtos/update-item.dto';
 import { Item } from './items.entity';
 import { CreateItemDto } from './dtos/create-item.dto';
-import { ITEM_NOT_FOUND, ITEM_NOT_FOUND_ID } from 'src/common/assets/messages';
+import {
+  CATEGORY_NOT_FOUND,
+  ITEM_NOT_FOUND,
+  ITEM_NOT_FOUND_ID,
+} from 'src/common/assets/messages';
+import { CreateCategoryItemDto } from '../category-item/dtos/create-category-item.dto';
+import { CategoryItem } from '../category-item/category-item.entity';
+import { DeepPartial } from 'typeorm';
+import { CategoryService } from '../categories/categories.service';
+import { CategoryItemRepository } from '../category-item/category-item.repository';
 
 @Injectable()
 export class ItemsService {
-  constructor(private readonly itemsRepository: ItemsRepository) {}
+  constructor(
+    private readonly itemsRepository: ItemsRepository,
+    private readonly categoryService: CategoryService,
+    private readonly categoryItemRepository: CategoryItemRepository,
+  ) {}
 
   async createItem(createItemDto: CreateItemDto): Promise<Item> {
     return this.itemsRepository.createItem(createItemDto);
@@ -42,5 +55,30 @@ export class ItemsService {
 
   async deleteItem(id: number): Promise<void> {
     return this.itemsRepository.deleteItem(id);
+  }
+
+  async associateItemWithCategory(
+    categoryItemDto: CreateCategoryItemDto,
+  ): Promise<CategoryItem> {
+    const category = await this.categoryService.getCategoryById(
+      categoryItemDto.categoryId,
+    );
+
+    if (!category) {
+      throw new NotFoundException(
+        CATEGORY_NOT_FOUND(categoryItemDto.categoryId),
+      );
+    }
+
+    const categoryItem: DeepPartial<CategoryItem> = {
+      category: { id: categoryItemDto.categoryId },
+      item: { id: categoryItemDto.itemId },
+    };
+
+    if (!category) {
+      throw new NotFoundException('Category not found.');
+    }
+
+    return this.categoryItemRepository.createItemInCategory(categoryItem);
   }
 }

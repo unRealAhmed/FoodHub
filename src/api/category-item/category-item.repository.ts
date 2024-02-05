@@ -11,6 +11,7 @@ export class CategoryItemRepository extends Repository<CategoryItem> {
   async createItemInCategory(
     categoryItem: DeepPartial<CategoryItem>,
   ): Promise<CategoryItem> {
+    console.log(categoryItem);
     return this.save(categoryItem);
   }
 

@@ -3,10 +3,8 @@ import { Category } from './categories.entity';
 import { CreateCategoryDto } from './dtos/create-category.dto';
 import { CATEGORY_NOT_FOUND } from 'src/common/assets/messages';
 import { CategoryRepository } from './categories.repository';
-import { CreateCategoryItemDto } from '../category-item/dtos/create-category-item.dto';
 import { CategoryItemRepository } from '../category-item/category-item.repository';
 import { CategoryItem } from '../category-item/category-item.entity';
-import { DeepPartial } from 'typeorm';
 
 @Injectable()
 export class CategoryService {
@@ -49,31 +47,6 @@ export class CategoryService {
 
   async deleteCategory(id: number): Promise<void> {
     await this.categoryRepository.deleteCategory(id);
-  }
-
-  async associateItemWithCategory(
-    categoryItemDto: CreateCategoryItemDto,
-  ): Promise<CategoryItem> {
-    const category = await this.categoryRepository.getCategoryById(
-      categoryItemDto.categoryId,
-    );
-
-    if (!category) {
-      throw new NotFoundException(
-        CATEGORY_NOT_FOUND(categoryItemDto.categoryId),
-      );
-    }
-
-    const categoryItem: DeepPartial<CategoryItem> = {
-      category,
-      item: { id: categoryItemDto.itemId },
-    };
-
-    if (!category) {
-      throw new NotFoundException('Category not found.');
-    }
-
-    return this.categoryItemRepository.createItemInCategory(categoryItem);
   }
 
   async getAllItemsInCategory(categoryName: string): Promise<CategoryItem[]> {
