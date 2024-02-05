@@ -140,4 +140,52 @@ export class ItemsController {
     console.log(createCategoryItemDto);
     return this.itemsService.associateItemWithCategory(createCategoryItemDto);
   }
+
+  @Get(':categoryName/items')
+  @ApiOperation({
+    summary: 'Get all items in a category',
+    description: 'Endpoint to retrieve all items in a category.',
+  })
+  @ApiOkResponse({
+    description: 'List of items in a category.',
+    type: CategoryItem,
+    isArray: true,
+  })
+  @ApiNotFoundResponse({
+    description: 'Category not found.',
+  })
+  @ApiParam({
+    name: 'categoryName',
+    description: 'The name of the category.',
+  })
+  async getAllItemsInCategory(
+    @Param('categoryName') categoryName: string,
+    @Paginate() pagination: Pagination,
+  ): Promise<PaginatedDto<CategoryItem>> {
+    console.log(categoryName);
+    return this.itemsService.getAllItemsInCategory(categoryName, pagination);
+  }
+
+  @Delete(':categoryId/items/:itemId')
+  @ApiOperation({
+    summary: 'Delete an item from a category',
+    description: 'Endpoint to delete an item from a category.',
+  })
+  @ApiOkResponse({
+    description: 'Item deleted from the category successfully.',
+  })
+  @ApiNotFoundResponse({
+    description: 'Category item not found.',
+  })
+  @ApiParam({
+    name: 'categoryId',
+    description: 'The ID of the category.',
+  })
+  @ApiParam({
+    name: 'itemId',
+    description: 'The ID of the item to delete.',
+  })
+  async deleteItemFromCategory(@Param('itemId') itemId: number): Promise<void> {
+    return this.itemsService.deleteItemOnSpecificCategory(itemId);
+  }
 }

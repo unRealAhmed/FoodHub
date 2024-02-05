@@ -17,12 +17,18 @@ export class CategoryItemRepository extends Repository<CategoryItem> {
 
   async getAllItemsOnSpecificCategory(
     categoryName: string,
-  ): Promise<CategoryItem[]> {
-    return this.createQueryBuilder('categoryItem')
+    page: number,
+    limit: number,
+  ): Promise<[CategoryItem[], number]> {
+    const [items, total] = await this.createQueryBuilder('categoryItem')
       .leftJoinAndSelect('categoryItem.category', 'category')
       .leftJoinAndSelect('categoryItem.item', 'item')
       .where('category.name = :categoryName', { categoryName })
-      .getMany();
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    return [items, total];
   }
 
   async deleteItemOnSpecificCategory(id: number): Promise<void> {
