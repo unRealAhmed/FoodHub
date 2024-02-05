@@ -3,7 +3,7 @@ import { MenusRepository } from './menus.repository';
 import { CreateMenuDto } from './dtos/create-menu.dto';
 import { UpdateMenuDto } from './dtos/update-menu.dto';
 import { Menu } from './menus.entity';
-import { MENU_NOT_FOUND } from 'src/assets/messages';
+import { MENU_NOT_FOUND } from 'src/common/assets/messages';
 
 @Injectable()
 export class MenusService {

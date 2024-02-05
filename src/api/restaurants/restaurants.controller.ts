@@ -7,7 +7,6 @@ import {
   Delete,
   Put,
   HttpStatus,
-  HttpException,
 } from '@nestjs/common';
 import { RestaurantsService } from './restaurants.service';
 import { CreateRestaurantDto } from './dtos/create-restaurant.dto';
@@ -23,6 +22,9 @@ import {
   ApiNotFoundResponse,
   ApiParam,
 } from '@nestjs/swagger';
+import { Paginate } from 'src/decorators/paginate.decorator';
+import { PaginatedDto } from 'src/types/paginated.dto';
+import { Pagination } from 'src/types/pagination.interface';
 
 @Controller('restaurants')
 @ApiTags('Restaurants')
@@ -72,8 +74,10 @@ export class RestaurantsController {
     isArray: true,
     status: HttpStatus.OK,
   })
-  async getAllRestaurants(): Promise<Restaurant[]> {
-    return this.restaurantsService.getAllRestaurants();
+  async getAllRestaurants(
+    @Paginate() pagination: Pagination,
+  ): Promise<PaginatedDto<Restaurant>> {
+    return this.restaurantsService.getAllRestaurants(pagination);
   }
 
   @Get(':id')

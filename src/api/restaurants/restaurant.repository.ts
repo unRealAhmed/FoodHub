@@ -2,7 +2,7 @@ import { DataSource, Repository } from 'typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateRestaurantDto } from './dtos/create-restaurant.dto';
 import { Restaurant } from './restaurant.entity';
-import { RESTAURANT_NOT_FOUND } from '../../assets/messages';
+import { RESTAURANT_NOT_FOUND } from '../../common/assets/messages';
 
 @Injectable()
 export class RestaurantRepository extends Repository<Restaurant> {

@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Category } from './categories.entity';
 import { CreateCategoryDto } from './dtos/create-category.dto';
-import { CATEGORY_NOT_FOUND } from 'src/assets/messages';
+import { CATEGORY_NOT_FOUND } from 'src/common/assets/messages';
 import { CategoryRepository } from './categories.repository';
 import { CreateCategoryItemDto } from '../category-item/dtos/create-category-item.dto';
 import { CategoryItemRepository } from '../category-item/category-item.repository';

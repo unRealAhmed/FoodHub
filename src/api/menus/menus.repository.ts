@@ -3,7 +3,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateMenuDto } from './dtos/create-menu.dto';
 import { UpdateMenuDto } from './dtos/update-menu.dto';
 import { Menu } from './menus.entity';
-import { MENU_NOT_FOUND } from 'src/assets/messages';
+import { MENU_NOT_FOUND } from 'src/common/assets/messages';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Restaurant } from '../restaurants/restaurant.entity';
 

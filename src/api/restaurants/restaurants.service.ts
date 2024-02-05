@@ -2,7 +2,9 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { RestaurantRepository } from './restaurant.repository';
 import { Restaurant } from './restaurant.entity';
 import { CreateRestaurantDto } from './dtos/create-restaurant.dto';
-import { RESTAURANT_NOT_FOUND } from '../../assets/messages';
+import { RESTAURANT_NOT_FOUND } from '../../common/assets/messages';
+import { Pagination } from 'src/types/pagination.interface';
+import { PaginatedDto } from 'src/types/paginated.dto';
 
 @Injectable()
 export class RestaurantsService {
@@ -12,8 +14,22 @@ export class RestaurantsService {
     return this.restaurantRepository.createRestaurant(createRestaurantDto);
   }
 
-  async getAllRestaurants(): Promise<Restaurant[]> {
-    return this.restaurantRepository.getAllRestaurants();
+  async getAllRestaurants(
+    paginationParams: Pagination,
+  ): Promise<PaginatedDto<Restaurant>> {
+    const { page, limit } = paginationParams;
+
+    const [items, total] = await this.restaurantRepository
+      .createQueryBuilder('restaurant')
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    return {
+      total,
+      pages: Math.ceil(total / limit),
+      items,
+    };
   }
 
   async getRestaurantById(id: number): Promise<Restaurant> {

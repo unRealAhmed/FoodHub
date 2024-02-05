@@ -3,7 +3,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateItemDto } from './dtos/update-item.dto';
 import { Item } from './items.entity';
 import { CreateItemDto } from './dtos/create-item.dto';
-import { ITEM_NOT_FOUND_ID } from 'src/assets/messages';
+import { ITEM_NOT_FOUND_ID } from 'src/common/assets/messages';
 
 @Injectable()
 export class ItemsRepository extends Repository<Item> {
