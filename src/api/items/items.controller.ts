@@ -6,6 +6,7 @@ import {
   Param,
   Put,
   Post,
+  Query,
 } from '@nestjs/common';
 import { ItemsService } from './items.service';
 import { Item } from './items.entity';
@@ -24,6 +25,7 @@ import { CreateCategoryItemDto } from '../category-item/dtos/create-category-ite
 import { Paginate } from 'src/decorators/paginate.decorator';
 import { PaginatedDto } from 'src/types/paginated.dto';
 import { Pagination } from 'src/types/pagination.interface';
+import { ItemsSearchCriteria } from 'src/helpers/filter';
 
 @Controller('items')
 @ApiTags('Items')
@@ -158,6 +160,7 @@ export class ItemsController {
     name: 'categoryName',
     description: 'The name of the category.',
   })
+  @Get('/:categoryName')
   async getAllItemsInCategory(
     @Param('categoryName') categoryName: string,
     @Paginate() pagination: Pagination,
