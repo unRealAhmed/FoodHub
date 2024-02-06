@@ -90,7 +90,6 @@ export class ItemsService {
   ): Promise<PaginatedDto<CategoryItem>> {
     const { page, limit } = paginationParams;
 
-    // Call the repository method with categoryName
     const [items, total] =
       await this.categoryItemRepository.getAllItemsOnSpecificCategory(
         categoryName,

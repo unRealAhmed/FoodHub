@@ -7,6 +7,7 @@ import {
   Delete,
   Put,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { RestaurantsService } from './restaurants.service';
 import { CreateRestaurantDto } from './dtos/create-restaurant.dto';
@@ -75,9 +76,24 @@ export class RestaurantsController {
     status: HttpStatus.OK,
   })
   async getAllRestaurants(
+    @Query() query: any,
     @Paginate() pagination: Pagination,
   ): Promise<PaginatedDto<Restaurant>> {
-    return this.restaurantsService.getAllRestaurants(pagination);
+    let searchCriteria = {};
+
+    // Dynamically construct the search criteria based on query parameters
+    Object.keys(query).forEach((key) => {
+      const value = query[key];
+      if (value) {
+        searchCriteria[key] = value;
+      }
+    });
+
+    // Pass the dynamically constructed search criteria to the service method
+    return this.restaurantsService.getAllRestaurants(
+      pagination,
+      searchCriteria,
+    );
   }
 
   @Get(':id')

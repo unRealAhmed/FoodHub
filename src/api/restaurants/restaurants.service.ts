@@ -5,6 +5,10 @@ import { CreateRestaurantDto } from './dtos/create-restaurant.dto';
 import { RESTAURANT_NOT_FOUND } from '../../common/assets/messages';
 import { Pagination } from 'src/types/pagination.interface';
 import { PaginatedDto } from 'src/types/paginated.dto';
+import {
+  filterRestaurants,
+  RestaurantSearchCriteria,
+} from 'src/helpers/filter';
 
 @Injectable()
 export class RestaurantsService {
@@ -16,19 +20,23 @@ export class RestaurantsService {
 
   async getAllRestaurants(
     paginationParams: Pagination,
+    searchCriteria: RestaurantSearchCriteria = {},
   ): Promise<PaginatedDto<Restaurant>> {
     const { page, limit } = paginationParams;
 
-    const [items, total] = await this.restaurantRepository
-      .createQueryBuilder('restaurant')
-      .skip((page - 1) * limit)
-      .take(limit)
-      .getManyAndCount();
+    const [items, total] = await this.restaurantRepository.findAndCount();
+
+    const filteredRestaurants = filterRestaurants(items, searchCriteria);
+
+    const paginatedRestaurants = filteredRestaurants.slice(
+      (page - 1) * limit,
+      page * limit,
+    );
 
     return {
-      total,
-      pages: Math.ceil(total / limit),
-      items,
+      total: filteredRestaurants.length,
+      pages: Math.ceil(filteredRestaurants.length / limit),
+      items: paginatedRestaurants,
     };
   }
 
