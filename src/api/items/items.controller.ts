@@ -27,6 +27,7 @@ import { CreateCategoryItemDto } from '../category-item/dtos/create-category-ite
 // import { Pagination } from 'src/types/pagination.interface';
 // import { ItemsSearchCriteria } from 'src/helpers/filter';
 import { PaginationDto } from 'src/types/paginated.dto';
+import { IFilterItems } from './dtos/filter-items.dto';
 
 @Controller('items')
 @ApiTags('Items')
@@ -58,11 +59,15 @@ export class ItemsController {
     isArray: true,
   })
   async getAllItems(
+    @Query() filter: IFilterItems,
     @Query('page') page: number,
     @Query('limit') limit: number,
   ): Promise<{ items: Item[]; count: number }> {
     const pagination: PaginationDto = { page, limit };
-    const { items, count } = await this.itemsService.getAllItems(pagination);
+    const { items, count } = await this.itemsService.getAllItems(
+      filter,
+      pagination,
+    );
     return { items, count };
   }
 

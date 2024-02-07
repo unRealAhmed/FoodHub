@@ -14,8 +14,7 @@ import { DeepPartial } from 'typeorm';
 import { CategoryService } from '../categories/categories.service';
 import { CategoryItemRepository } from '../category-item/category-item.repository';
 import { PaginationDto } from 'src/types/paginated.dto';
-// import { Pagination } from 'src/types/pagination.interface';
-// import { PaginatedDto } from 'src/types/paginated.dto';
+import { IFilterItems } from './dtos/filter-items.dto';
 
 @Injectable()
 export class ItemsService {
@@ -30,11 +29,26 @@ export class ItemsService {
   }
 
   async getAllItems(
-    pagination: PaginationDto,
+    filter: IFilterItems,
+    pagination?: PaginationDto,
   ): Promise<{ items: Item[]; count: number }> {
-    const items = await this.itemsRepository.getAllItems(pagination);
-    const itemsCount = await this.itemsRepository.getItemsCount();
-    return { items, count: itemsCount };
+    if (filter.categoryName) {
+      const data =
+        await this.categoryItemRepository.getAllItemsOnSpecificCategory(
+          filter.categoryName,
+          pagination,
+        );
+      const itemsCount =
+        await this.categoryItemRepository.getCategoryItemsCount(
+          filter.categoryName,
+        );
+
+      return { items: data, count: itemsCount };
+    }
+
+    const data = await this.itemsRepository.getAllItems(filter, pagination);
+    const itemsCount = await this.itemsRepository.getItemsCount(filter);
+    return { items: data, count: itemsCount };
   }
 
   async getItemByName(name: string): Promise<Item | null> {

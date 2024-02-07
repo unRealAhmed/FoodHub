@@ -5,6 +5,7 @@ import { Restaurant } from './restaurant.entity';
 import { RESTAURANT_NOT_FOUND } from '../../common/assets/messages';
 // import { Pagination } from 'src/types/pagination.interface';
 import { PaginationDto } from 'src/types/paginated.dto';
+import { IFilterRestaurant } from './dtos/filter-restaurants.dto';
 
 @Injectable()
 export class RestaurantRepository extends Repository<Restaurant> {
@@ -15,28 +16,43 @@ export class RestaurantRepository extends Repository<Restaurant> {
     return this.save(restaurant);
   }
 
-  async getRestaurantsCount(): Promise<number> {
-    const count = await this.createQueryBuilder().getCount();
+  async getRestaurantsCount(filter: IFilterRestaurant): Promise<number> {
+    const count = await this.count({
+      where: filter,
+    });
     return count;
   }
 
-  async getAllRestaurants(pagination?: PaginationDto): Promise<Restaurant[]> {
+  async getAllRestaurants(
+    filter: IFilterRestaurant,
+    pagination?: PaginationDto,
+  ): Promise<Restaurant[]> {
     const { page = 1, limit = 5 } = pagination || { page: 1, limit: 5 };
     const skip = (page - 1) * limit;
 
-    const restaurants = await this.createQueryBuilder()
-      .skip(skip)
-      .take(limit)
-      .getMany();
+    const { name, location, rating } = filter;
 
-    //   const [restaurants, count] = await this.createQueryBuilder()
+    return this.find({
+      where: {
+        ...(!!rating && { rating }),
+        ...(!!location && { location }),
+        ...(!!name && { name }),
+      },
+      take: limit,
+      skip,
+    });
+
+    // const { name, location, rating } = filter;
+    // const restaurants = await this.createQueryBuilder()
+    //   .where('name= :name OR location= :location OR rating= :rating', {
+    //     name,
+    //     location,
+    //     rating,
+    //   })
     //   .skip(skip)
-    //   .take(take)
-    //   .getManyAndCount();
-
-    // return [restaurants, count];
-
-    return restaurants;
+    //   .take(limit)
+    //   .getMany();
+    // return restaurants;
   }
 
   async getRestaurantById(id: number): Promise<Restaurant | null> {

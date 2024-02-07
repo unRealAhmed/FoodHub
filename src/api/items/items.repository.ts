@@ -5,6 +5,7 @@ import { Item } from './items.entity';
 import { CreateItemDto } from './dtos/create-item.dto';
 import { ITEM_NOT_FOUND_ID } from 'src/common/assets/messages';
 import { PaginationDto } from 'src/types/paginated.dto';
+import { IFilterItems } from './dtos/filter-items.dto';
 
 @Injectable()
 export class ItemsRepository extends Repository<Item> {
@@ -16,21 +17,32 @@ export class ItemsRepository extends Repository<Item> {
     return this.save(item);
   }
 
-  async getItemsCount(): Promise<number> {
-    const count = await this.createQueryBuilder().getCount();
+  async getItemsCount(filter: IFilterItems): Promise<number> {
+    const count = await this.count({ where: filter });
     return count;
   }
 
-  async getAllItems(pagination: PaginationDto): Promise<Item[]> {
+  async getAllItems(
+    filter: IFilterItems,
+    pagination: PaginationDto,
+  ): Promise<Item[]> {
     const { page = 1, limit = 5 } = pagination || { page: 1, limit: 5 };
     const skip = (page - 1) * limit;
+    const { price } = filter;
 
-    const items = await this.createQueryBuilder()
-      .skip(skip)
-      .limit(limit)
-      .getMany();
+    return this.find({
+      where: {
+        ...(!!price && { price }),
+      },
+      take: limit,
+      skip,
+    });
 
-    return items;
+    // const items = await this.createQueryBuilder()
+    //   .skip(skip)
+    //   .limit(limit)
+    //   .getMany();
+    // return items;
   }
 
   async getItemByName(name: string): Promise<Item | null> {

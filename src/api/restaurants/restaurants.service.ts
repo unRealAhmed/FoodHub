@@ -5,6 +5,7 @@ import { CreateRestaurantDto } from './dtos/create-restaurant.dto';
 import { RESTAURANT_NOT_FOUND } from '../../common/assets/messages';
 // import { Pagination } from 'src/types/pagination.interface';
 import { PaginationDto } from 'src/types/paginated.dto';
+import { IFilterRestaurant } from './dtos/filter-restaurants.dto';
 // import {
 //   filterRestaurants,
 //   RestaurantSearchCriteria,
@@ -19,12 +20,15 @@ export class RestaurantsService {
   }
 
   async getAllRestaurants(
-    pagination: PaginationDto,
+    filter: IFilterRestaurant,
+    pagination?: PaginationDto,
   ): Promise<{ restaurants: Restaurant[]; count: number }> {
-    const restaurants =
-      await this.restaurantRepository.getAllRestaurants(pagination);
+    const restaurants = await this.restaurantRepository.getAllRestaurants(
+      filter,
+      pagination,
+    );
     const restaurantsCount =
-      await this.restaurantRepository.getRestaurantsCount();
+      await this.restaurantRepository.getRestaurantsCount(filter);
     return { restaurants, count: restaurantsCount };
   }
 

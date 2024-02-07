@@ -1,6 +1,7 @@
 import { DataSource, DeepPartial, Repository } from 'typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CategoryItem } from './category-item.entity';
+import { PaginationDto } from 'src/types/paginated.dto';
 
 @Injectable()
 export class CategoryItemRepository extends Repository<CategoryItem> {
@@ -15,20 +16,29 @@ export class CategoryItemRepository extends Repository<CategoryItem> {
     return this.save(categoryItem);
   }
 
+  async getCategoryItemsCount(categoryName: string): Promise<number> {
+    const count = await this.count({
+      where: { category: { name: categoryName } },
+    });
+    return count;
+  }
+
   async getAllItemsOnSpecificCategory(
     categoryName: string,
-    page: number,
-    limit: number,
-  ): Promise<[CategoryItem[], number]> {
-    const [items, total] = await this.createQueryBuilder('categoryItem')
+    pagination: PaginationDto,
+  ): Promise<[CategoryItem[]]> {
+    const { page = 1, limit = 5 } = pagination || { page: 1, limit: 5 };
+    const skip = (page - 1) * limit;
+
+    const category_items = await this.createQueryBuilder('categoryItem')
       .leftJoinAndSelect('categoryItem.category', 'category')
       .leftJoinAndSelect('categoryItem.item', 'item')
       .where('category.name = :categoryName', { categoryName })
-      .skip((page - 1) * limit)
+      .skip(skip)
       .take(limit)
-      .getManyAndCount();
+      .execute();
 
-    return [items, total];
+    return category_items;
   }
 
   async deleteItemOnSpecificCategory(id: number): Promise<void> {

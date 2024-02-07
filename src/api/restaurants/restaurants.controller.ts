@@ -23,9 +23,8 @@ import {
   ApiNotFoundResponse,
   ApiParam,
 } from '@nestjs/swagger';
-// import { Paginate } from 'src/decorators/paginate.decorator';
 import { PaginationDto } from 'src/types/paginated.dto';
-// import { Pagination } from 'src/types/pagination.interface';
+import { IFilterRestaurant } from './dtos/filter-restaurants.dto';
 
 @Controller('restaurants')
 @ApiTags('Restaurants')
@@ -76,13 +75,13 @@ export class RestaurantsController {
     status: HttpStatus.OK,
   })
   async getAllRestaurants(
+    @Query() filter: IFilterRestaurant,
     @Query('page') page: number,
     @Query('limit') limit: number,
   ): Promise<{ restaurants: Restaurant[]; count: number }> {
     const pagination: PaginationDto = { page, limit };
-
     const { restaurants, count } =
-      await this.restaurantsService.getAllRestaurants(pagination);
+      await this.restaurantsService.getAllRestaurants(filter, pagination);
 
     return { restaurants, count };
   }
