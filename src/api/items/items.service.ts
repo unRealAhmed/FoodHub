@@ -32,20 +32,6 @@ export class ItemsService {
     filter: IFilterItems,
     pagination?: PaginationDto,
   ): Promise<{ items: Item[]; count: number }> {
-    if (filter.categoryName) {
-      const data =
-        await this.categoryItemRepository.getAllItemsOnSpecificCategory(
-          filter.categoryName,
-          pagination,
-        );
-      const itemsCount =
-        await this.categoryItemRepository.getCategoryItemsCount(
-          filter.categoryName,
-        );
-
-      return { items: data, count: itemsCount };
-    }
-
     const data = await this.itemsRepository.getAllItems(filter, pagination);
     const itemsCount = await this.itemsRepository.getItemsCount(filter);
     return { items: data, count: itemsCount };
@@ -103,25 +89,20 @@ export class ItemsService {
     return this.categoryItemRepository.createItemInCategory(categoryItem);
   }
 
-  // async getAllItemsInCategory(
-  //   categoryName: string,
-  //   paginationParams: Pagination,
-  // ): Promise<PaginatedDto<CategoryItem>> {
-  //   const { page, limit } = paginationParams;
+  async getAllItemsInCategory(
+    categoryName: string,
+    pagination: PaginationDto,
+  ): Promise<{ category_items: CategoryItem[]; count: number }> {
+    const data =
+      await this.categoryItemRepository.getAllItemsOnSpecificCategory(
+        categoryName,
+        pagination,
+      );
+    const itemsCount =
+      await this.categoryItemRepository.getCategoryItemsCount(categoryName);
+    return { category_items: data, count: itemsCount };
+  }
 
-  //   const [items, total] =
-  //     await this.categoryItemRepository.getAllItemsOnSpecificCategory(
-  //       categoryName,
-  //       page,
-  //       limit,
-  //     );
-
-  //   return {
-  //     total,
-  //     pages: Math.ceil(total / limit),
-  //     items,
-  //   };
-  // }
   async deleteItemOnSpecificCategory(itemId: number): Promise<void> {
     await this.categoryItemRepository.deleteItemOnSpecificCategory(itemId);
   }

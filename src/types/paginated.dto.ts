@@ -5,10 +5,10 @@ export class PaginationDto {
   @ApiProperty({ example: 1 })
   @IsOptional()
   @IsPositive()
-  limit: number = 10;
+  limit?: number = 10;
 
   @ApiProperty({ example: 1 })
   @IsOptional()
   @IsPositive()
-  page: number = 1;
+  page?: number = 1;
 }

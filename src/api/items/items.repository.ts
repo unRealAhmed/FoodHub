@@ -24,7 +24,7 @@ export class ItemsRepository extends Repository<Item> {
 
   async getAllItems(
     filter: IFilterItems,
-    pagination: PaginationDto,
+    pagination?: PaginationDto,
   ): Promise<Item[]> {
     const { page = 1, limit = 5 } = pagination || { page: 1, limit: 5 };
     const skip = (page - 1) * limit;

@@ -8,9 +8,4 @@ export class IFilterItems {
   @IsNumber()
   @Type(() => Number)
   price?: number;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  categoryName?: string;
 }

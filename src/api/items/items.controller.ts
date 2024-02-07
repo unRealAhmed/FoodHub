@@ -171,14 +171,16 @@ export class ItemsController {
     name: 'categoryName',
     description: 'The name of the category.',
   })
-  // @Get('/:categoryName')
-  // async getAllItemsInCategory(
-  //   @Param('categoryName') categoryName: string,
-  //   @Paginate() pagination: Pagination,
-  // ): Promise<PaginatedDto<CategoryItem>> {
-  //   console.log(categoryName);
-  //   return this.itemsService.getAllItemsInCategory(categoryName, pagination);
-  // }
+  @Get('/:categoryName/items')
+  async getAllItemsInCategory(
+    @Param('categoryName') categoryName: string,
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+  ): Promise<{ category_items: CategoryItem[]; count: number }> {
+    const pagination: PaginationDto = { page, limit };
+    return this.itemsService.getAllItemsInCategory(categoryName, pagination);
+  }
+
   @Delete(':categoryId/items/:itemId')
   @ApiOperation({
     summary: 'Delete an item from a category',

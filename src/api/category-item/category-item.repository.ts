@@ -26,16 +26,16 @@ export class CategoryItemRepository extends Repository<CategoryItem> {
   async getAllItemsOnSpecificCategory(
     categoryName: string,
     pagination: PaginationDto,
-  ): Promise<[CategoryItem[]]> {
+  ): Promise<CategoryItem[]> {
     const { page = 1, limit = 5 } = pagination || { page: 1, limit: 5 };
     const skip = (page - 1) * limit;
-
     const category_items = await this.createQueryBuilder('categoryItem')
       .leftJoinAndSelect('categoryItem.category', 'category')
       .leftJoinAndSelect('categoryItem.item', 'item')
       .where('category.name = :categoryName', { categoryName })
+      .select(['item.price', 'item.name'])
       .skip(skip)
-      .take(limit)
+      .take(+limit)
       .execute();
 
     return category_items;
