@@ -22,10 +22,11 @@ import {
 } from '@nestjs/swagger';
 import { CategoryItem } from '../category-item/category-item.entity';
 import { CreateCategoryItemDto } from '../category-item/dtos/create-category-item.dto';
-import { Paginate } from 'src/decorators/paginate.decorator';
-import { PaginatedDto } from 'src/types/paginated.dto';
-import { Pagination } from 'src/types/pagination.interface';
-import { ItemsSearchCriteria } from 'src/helpers/filter';
+// import { Paginate } from 'src/decorators/paginate.decorator';
+// import { PaginatedDto } from 'src/types/paginated.dto';
+// import { Pagination } from 'src/types/pagination.interface';
+// import { ItemsSearchCriteria } from 'src/helpers/filter';
+import { PaginationDto } from 'src/types/paginated.dto';
 
 @Controller('items')
 @ApiTags('Items')
@@ -56,8 +57,13 @@ export class ItemsController {
     type: Item,
     isArray: true,
   })
-  async getAllItems(): Promise<Item[]> {
-    return this.itemsService.getAllItems();
+  async getAllItems(
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+  ): Promise<{ items: Item[]; count: number }> {
+    const pagination: PaginationDto = { page, limit };
+    const { items, count } = await this.itemsService.getAllItems(pagination);
+    return { items, count };
   }
 
   @Get(':name')
@@ -160,15 +166,14 @@ export class ItemsController {
     name: 'categoryName',
     description: 'The name of the category.',
   })
-  @Get('/:categoryName')
-  async getAllItemsInCategory(
-    @Param('categoryName') categoryName: string,
-    @Paginate() pagination: Pagination,
-  ): Promise<PaginatedDto<CategoryItem>> {
-    console.log(categoryName);
-    return this.itemsService.getAllItemsInCategory(categoryName, pagination);
-  }
-
+  // @Get('/:categoryName')
+  // async getAllItemsInCategory(
+  //   @Param('categoryName') categoryName: string,
+  //   @Paginate() pagination: Pagination,
+  // ): Promise<PaginatedDto<CategoryItem>> {
+  //   console.log(categoryName);
+  //   return this.itemsService.getAllItemsInCategory(categoryName, pagination);
+  // }
   @Delete(':categoryId/items/:itemId')
   @ApiOperation({
     summary: 'Delete an item from a category',

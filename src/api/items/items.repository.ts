@@ -4,6 +4,7 @@ import { UpdateItemDto } from './dtos/update-item.dto';
 import { Item } from './items.entity';
 import { CreateItemDto } from './dtos/create-item.dto';
 import { ITEM_NOT_FOUND_ID } from 'src/common/assets/messages';
+import { PaginationDto } from 'src/types/paginated.dto';
 
 @Injectable()
 export class ItemsRepository extends Repository<Item> {
@@ -15,8 +16,21 @@ export class ItemsRepository extends Repository<Item> {
     return this.save(item);
   }
 
-  async getAllItems(): Promise<Item[]> {
-    return this.find();
+  async getItemsCount(): Promise<number> {
+    const count = await this.createQueryBuilder().getCount();
+    return count;
+  }
+
+  async getAllItems(pagination: PaginationDto): Promise<Item[]> {
+    const { page = 1, limit = 5 } = pagination || { page: 1, limit: 5 };
+    const skip = (page - 1) * limit;
+
+    const items = await this.createQueryBuilder()
+      .skip(skip)
+      .limit(limit)
+      .getMany();
+
+    return items;
   }
 
   async getItemByName(name: string): Promise<Item | null> {

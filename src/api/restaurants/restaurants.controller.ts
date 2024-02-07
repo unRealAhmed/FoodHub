@@ -23,9 +23,9 @@ import {
   ApiNotFoundResponse,
   ApiParam,
 } from '@nestjs/swagger';
-import { Paginate } from 'src/decorators/paginate.decorator';
-import { PaginatedDto } from 'src/types/paginated.dto';
-import { Pagination } from 'src/types/pagination.interface';
+// import { Paginate } from 'src/decorators/paginate.decorator';
+import { PaginationDto } from 'src/types/paginated.dto';
+// import { Pagination } from 'src/types/pagination.interface';
 
 @Controller('restaurants')
 @ApiTags('Restaurants')
@@ -76,22 +76,15 @@ export class RestaurantsController {
     status: HttpStatus.OK,
   })
   async getAllRestaurants(
-    @Query() query: any,
-    @Paginate() pagination: Pagination,
-  ): Promise<PaginatedDto<Restaurant>> {
-    let searchCriteria = {};
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+  ): Promise<{ restaurants: Restaurant[]; count: number }> {
+    const pagination: PaginationDto = { page, limit };
 
-    Object.keys(query).forEach((key) => {
-      const value = query[key];
-      if (value) {
-        searchCriteria[key] = value;
-      }
-    });
+    const { restaurants, count } =
+      await this.restaurantsService.getAllRestaurants(pagination);
 
-    return this.restaurantsService.getAllRestaurants(
-      pagination,
-      searchCriteria,
-    );
+    return { restaurants, count };
   }
 
   @Get(':id')

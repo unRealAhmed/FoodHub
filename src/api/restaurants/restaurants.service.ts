@@ -3,12 +3,12 @@ import { RestaurantRepository } from './restaurant.repository';
 import { Restaurant } from './restaurant.entity';
 import { CreateRestaurantDto } from './dtos/create-restaurant.dto';
 import { RESTAURANT_NOT_FOUND } from '../../common/assets/messages';
-import { Pagination } from 'src/types/pagination.interface';
-import { PaginatedDto } from 'src/types/paginated.dto';
-import {
-  filterRestaurants,
-  RestaurantSearchCriteria,
-} from 'src/helpers/filter';
+// import { Pagination } from 'src/types/pagination.interface';
+import { PaginationDto } from 'src/types/paginated.dto';
+// import {
+//   filterRestaurants,
+//   RestaurantSearchCriteria,
+// } from 'src/helpers/filter';
 
 @Injectable()
 export class RestaurantsService {
@@ -19,25 +19,13 @@ export class RestaurantsService {
   }
 
   async getAllRestaurants(
-    paginationParams: Pagination,
-    searchCriteria: RestaurantSearchCriteria = {},
-  ): Promise<PaginatedDto<Restaurant>> {
-    const { page, limit } = paginationParams;
-
-    const [items, total] = await this.restaurantRepository.findAndCount();
-
-    const filteredRestaurants = filterRestaurants(items, searchCriteria);
-
-    const paginatedRestaurants = filteredRestaurants.slice(
-      (page - 1) * limit,
-      page * limit,
-    );
-
-    return {
-      total: filteredRestaurants.length,
-      pages: Math.ceil(filteredRestaurants.length / limit),
-      items: paginatedRestaurants,
-    };
+    pagination: PaginationDto,
+  ): Promise<{ restaurants: Restaurant[]; count: number }> {
+    const restaurants =
+      await this.restaurantRepository.getAllRestaurants(pagination);
+    const restaurantsCount =
+      await this.restaurantRepository.getRestaurantsCount();
+    return { restaurants, count: restaurantsCount };
   }
 
   async getRestaurantById(id: number): Promise<Restaurant> {

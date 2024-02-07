@@ -13,8 +13,9 @@ import { CategoryItem } from '../category-item/category-item.entity';
 import { DeepPartial } from 'typeorm';
 import { CategoryService } from '../categories/categories.service';
 import { CategoryItemRepository } from '../category-item/category-item.repository';
-import { Pagination } from 'src/types/pagination.interface';
-import { PaginatedDto } from 'src/types/paginated.dto';
+import { PaginationDto } from 'src/types/paginated.dto';
+// import { Pagination } from 'src/types/pagination.interface';
+// import { PaginatedDto } from 'src/types/paginated.dto';
 
 @Injectable()
 export class ItemsService {
@@ -28,8 +29,12 @@ export class ItemsService {
     return this.itemsRepository.createItem(createItemDto);
   }
 
-  async getAllItems(): Promise<Item[]> {
-    return this.itemsRepository.getAllItems();
+  async getAllItems(
+    pagination: PaginationDto,
+  ): Promise<{ items: Item[]; count: number }> {
+    const items = await this.itemsRepository.getAllItems(pagination);
+    const itemsCount = await this.itemsRepository.getItemsCount();
+    return { items, count: itemsCount };
   }
 
   async getItemByName(name: string): Promise<Item | null> {
@@ -84,25 +89,25 @@ export class ItemsService {
     return this.categoryItemRepository.createItemInCategory(categoryItem);
   }
 
-  async getAllItemsInCategory(
-    categoryName: string,
-    paginationParams: Pagination,
-  ): Promise<PaginatedDto<CategoryItem>> {
-    const { page, limit } = paginationParams;
+  // async getAllItemsInCategory(
+  //   categoryName: string,
+  //   paginationParams: Pagination,
+  // ): Promise<PaginatedDto<CategoryItem>> {
+  //   const { page, limit } = paginationParams;
 
-    const [items, total] =
-      await this.categoryItemRepository.getAllItemsOnSpecificCategory(
-        categoryName,
-        page,
-        limit,
-      );
+  //   const [items, total] =
+  //     await this.categoryItemRepository.getAllItemsOnSpecificCategory(
+  //       categoryName,
+  //       page,
+  //       limit,
+  //     );
 
-    return {
-      total,
-      pages: Math.ceil(total / limit),
-      items,
-    };
-  }
+  //   return {
+  //     total,
+  //     pages: Math.ceil(total / limit),
+  //     items,
+  //   };
+  // }
   async deleteItemOnSpecificCategory(itemId: number): Promise<void> {
     await this.categoryItemRepository.deleteItemOnSpecificCategory(itemId);
   }
