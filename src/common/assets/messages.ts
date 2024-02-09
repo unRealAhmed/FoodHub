@@ -11,3 +11,8 @@ export const ITEM_NOT_FOUND = (name: string) =>
 
 export const ITEM_NOT_FOUND_ID = (id: number) =>
   `Item with name ${id} not found`;
+
+export const ORDER_FULFILLED = 'fulfilled.';
+export const ORDER_IN_PROGRESS = 'inProgress';
+export const ORDER_CANCELLED_BY_USER = 'cancelledByUser';
+export const ORDER_CANCELLED_BY_RESTAURANT = 'cancelledByRestaurant';
