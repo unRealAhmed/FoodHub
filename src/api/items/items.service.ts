@@ -82,10 +82,6 @@ export class ItemsService {
       item: { id: categoryItemDto.itemId },
     };
 
-    if (!category) {
-      throw new NotFoundException('Category not found.');
-    }
-
     return this.categoryItemRepository.createItemInCategory(categoryItem);
   }
 

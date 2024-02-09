@@ -1,4 +1,4 @@
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, In, Repository } from 'typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateItemDto } from './dtos/update-item.dto';
 import { Item } from './items.entity';
@@ -37,12 +37,6 @@ export class ItemsRepository extends Repository<Item> {
       take: limit,
       skip,
     });
-
-    // const items = await this.createQueryBuilder()
-    //   .skip(skip)
-    //   .limit(limit)
-    //   .getMany();
-    // return items;
   }
 
   async getItemByName(name: string): Promise<Item | null> {
@@ -65,5 +59,17 @@ export class ItemsRepository extends Repository<Item> {
     if (result.affected === 0) {
       throw new NotFoundException(ITEM_NOT_FOUND_ID(id));
     }
+  }
+
+  async getItemById(id: { id: number }): Promise<Item | null> {
+    return this.findOne({ where: id });
+  }
+
+  getItemsByIds(ids: number[]) {
+    return this.find({
+      where: {
+        id: In(ids),
+      },
+    });
   }
 }

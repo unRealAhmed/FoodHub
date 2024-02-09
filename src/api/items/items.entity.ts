@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
+import { Order } from '../orders/orders.entity';
 
 @Entity()
 export class Item {
@@ -14,4 +21,12 @@ export class Item {
   @ApiProperty()
   @Column()
   price!: number;
+
+  @ApiProperty()
+  @ManyToMany(() => Order, (order) => order.items)
+  orders!: Order[];
+
+  static fromPartial(partial: Partial<Item>) {
+    return Object.assign({}, new Item(), partial);
+  }
 }
