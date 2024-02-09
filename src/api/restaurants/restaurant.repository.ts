@@ -59,6 +59,10 @@ export class RestaurantRepository extends Repository<Restaurant> {
     return this.findOne({ where: { id } });
   }
 
+  async getRestaurantByName(name: string): Promise<Restaurant | null> {
+    return this.findOne({ where: { name } });
+  }
+
   async updateRestaurant(
     id: number,
     restaurant: CreateRestaurantDto,

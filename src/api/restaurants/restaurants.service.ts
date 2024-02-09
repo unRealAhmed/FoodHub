@@ -59,4 +59,8 @@ export class RestaurantsService {
   async deleteRestaurant(id: number): Promise<void> {
     await this.restaurantRepository.deleteRestaurant(id);
   }
+
+  async getRestaurantByName(name: string): Promise<Restaurant | null> {
+    return await this.restaurantRepository.getRestaurantByName(name);
+  }
 }

@@ -60,7 +60,7 @@ export class RestaurantsController {
   async createRestaurant(
     @Body() createRestaurantDto: CreateRestaurantDto,
   ): Promise<Restaurant> {
-    return this.restaurantsService.create(createRestaurantDto);
+    return await this.restaurantsService.create(createRestaurantDto);
   }
 
   @Get()
