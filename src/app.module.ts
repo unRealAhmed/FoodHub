@@ -11,6 +11,10 @@ import { CategoryItemModule } from './api/category-item/category-item.module';
 import { Category } from './api/categories/categories.entity';
 import { Item } from './api/items/items.entity';
 import { CategoryItem } from './api/category-item/category-item.entity';
+import { UserModule } from './api/users/user.module';
+import { User } from './api/users/user.entity';
+import { OrdersModule } from './api/orders/orders.module';
+import { Order } from './api/orders/orders.entity';
 
 @Module({
   imports: [
@@ -22,7 +26,7 @@ import { CategoryItem } from './api/category-item/category-item.entity';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [Restaurant, Menu, Category, Item, CategoryItem],
+      entities: [Restaurant, Menu, Category, Item, CategoryItem, User, Order],
       synchronize: true,
     }),
     RestaurantsModule,
@@ -30,6 +34,8 @@ import { CategoryItem } from './api/category-item/category-item.entity';
     ItemModule,
     CategoryModule,
     CategoryItemModule,
+    UserModule,
+    OrdersModule,
   ],
 })
 export class AppModule {}
