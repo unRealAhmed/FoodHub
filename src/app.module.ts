@@ -36,6 +36,16 @@ import { Order } from './api/orders/orders.entity';
     CategoryItemModule,
     UserModule,
     OrdersModule,
+    // LoggerModule.forRoot({
+    //   pinoHttp: {
+    //     transport: {
+    //       target: 'pino-pretty',
+    //       options: {
+    //         singleLine: true,
+    //       },
+    //     },
+    //   },
+    // }),
   ],
 })
 export class AppModule {}

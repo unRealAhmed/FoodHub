@@ -8,6 +8,7 @@ import {
   Put,
   HttpStatus,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { RestaurantsService } from './restaurants.service';
 import { CreateRestaurantDto } from './dtos/create-restaurant.dto';
