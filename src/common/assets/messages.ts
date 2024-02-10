@@ -28,3 +28,10 @@ export const ORDER_FULFILLED = 'fulfilled.';
 export const ORDER_IN_PROGRESS = 'inProgress';
 export const ORDER_CANCELLED_BY_USER = 'cancelledByUser';
 export const ORDER_CANCELLED_BY_RESTAURANT = 'cancelledByRestaurant';
+
+//MENU MESSAGES
+export const LIST_OF_ALL_MENUS = 'List of all menus.';
+export const MENU_FOUND = 'Menu found.';
+export const MENU_CREATED_SUCCESSFULLY = 'Menu created successfully.';
+export const MENU_UPDATED_SUCCESSFULLY = 'Menu updated successfully.';
+export const MENU_DELETED_SUCCESSFULLY = 'Menu deleted successfully.';
