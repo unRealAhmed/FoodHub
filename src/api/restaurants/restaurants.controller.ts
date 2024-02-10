@@ -8,7 +8,6 @@ import {
   Put,
   HttpStatus,
   Query,
-  UseInterceptors,
 } from '@nestjs/common';
 import { RestaurantsService } from './restaurants.service';
 import { CreateRestaurantDto } from './dtos/create-restaurant.dto';
@@ -26,6 +25,13 @@ import {
 } from '@nestjs/swagger';
 import { PaginationDto } from 'src/types/paginated.dto';
 import { IFilterRestaurant } from './dtos/filter-restaurants.dto';
+import {
+  RESTAURANT_CREATED_SUCCESSFULLY,
+  LIST_OF_ALL_RESTAURANTS,
+  RESTAURANT_FOUND,
+  RESTAURANT_UPDATED_SUCCESSFULLY,
+  RESTAURANT_DELETED_SUCCESSFULLY,
+} from 'src/common/assets/messages';
 
 @Controller('restaurants')
 @ApiTags('Restaurants')
@@ -35,7 +41,7 @@ export class RestaurantsController {
   @Post()
   @ApiOperation({
     summary: 'Create a new restaurant',
-    description: 'Endpoint to create a new restaurant.',
+    description: 'create a new restaurant.',
   })
   @ApiBody({
     type: CreateRestaurantDto,
@@ -60,14 +66,15 @@ export class RestaurantsController {
   })
   async createRestaurant(
     @Body() createRestaurantDto: CreateRestaurantDto,
-  ): Promise<Restaurant> {
-    return await this.restaurantsService.create(createRestaurantDto);
+  ): Promise<{ message: string; data: Restaurant }> {
+    const data = await this.restaurantsService.create(createRestaurantDto);
+    return { message: RESTAURANT_CREATED_SUCCESSFULLY, data };
   }
 
   @Get()
   @ApiOperation({
     summary: 'Get a list of all restaurants',
-    description: 'Endpoint to retrieve a list of all restaurants.',
+    description: 'retrieve a list of all restaurants.',
   })
   @ApiOkResponse({
     description: 'List of all restaurants.',
@@ -79,18 +86,24 @@ export class RestaurantsController {
     @Query() filter: IFilterRestaurant,
     @Query('page') page: number,
     @Query('limit') limit: number,
-  ): Promise<{ restaurants: Restaurant[]; count: number }> {
+  ): Promise<{
+    message: string;
+    data: { restaurants: Restaurant[]; count: number };
+  }> {
     const pagination: PaginationDto = { page, limit };
     const { restaurants, count } =
       await this.restaurantsService.getAllRestaurants(filter, pagination);
 
-    return { restaurants, count };
+    return {
+      message: LIST_OF_ALL_RESTAURANTS,
+      data: { restaurants, count },
+    };
   }
 
   @Get(':id')
   @ApiOperation({
     summary: 'Get a restaurant by ID',
-    description: 'Endpoint to retrieve a restaurant by its ID.',
+    description: 'retrieve a restaurant by its ID.',
   })
   @ApiOkResponse({
     description: 'Restaurant found.',
@@ -105,14 +118,17 @@ export class RestaurantsController {
     name: 'id',
     description: 'ID of the restaurant',
   })
-  async getRestaurantById(@Param('id') id: number): Promise<Restaurant> {
-    return this.restaurantsService.getRestaurantById(id);
+  async getRestaurantById(
+    @Param('id') id: number,
+  ): Promise<{ message: string; data: Restaurant }> {
+    const data = await this.restaurantsService.getRestaurantById(id);
+    return { message: RESTAURANT_FOUND, data };
   }
 
   @Put(':id')
   @ApiOperation({
     summary: 'Update a restaurant by ID',
-    description: 'Endpoint to update a restaurant by its ID.',
+    description: 'update a restaurant by its ID.',
   })
   @ApiBody({
     type: CreateRestaurantDto,
@@ -142,14 +158,18 @@ export class RestaurantsController {
   async updateRestaurant(
     @Param('id') id: number,
     @Body() updateRestaurantDto: CreateRestaurantDto,
-  ): Promise<Restaurant> {
-    return this.restaurantsService.updateRestaurant(id, updateRestaurantDto);
+  ): Promise<{ message: string; data: Restaurant | null }> {
+    const data = await this.restaurantsService.updateRestaurant(
+      id,
+      updateRestaurantDto,
+    );
+    return { message: RESTAURANT_UPDATED_SUCCESSFULLY, data };
   }
 
   @Delete(':id')
   @ApiOperation({
     summary: 'Delete a restaurant by ID',
-    description: 'Endpoint to delete a restaurant by its ID.',
+    description: 'delete a restaurant by its ID.',
   })
   @ApiOkResponse({
     description: 'Restaurant deleted successfully.',
@@ -163,7 +183,10 @@ export class RestaurantsController {
     name: 'id',
     description: 'ID of the restaurant',
   })
-  async deleteRestaurant(@Param('id') id: number): Promise<void> {
+  async deleteRestaurant(
+    @Param('id') id: number,
+  ): Promise<{ message: string }> {
     await this.restaurantsService.deleteRestaurant(id);
+    return { message: RESTAURANT_DELETED_SUCCESSFULLY };
   }
 }
