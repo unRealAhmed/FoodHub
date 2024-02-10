@@ -1,7 +1,7 @@
 import { DataSource, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { User } from './user.entity';
-import { CreateUserDto } from './dtos/create-user.dto';
+import { UserInterface } from 'src/common/interfaces/user.interface';
 
 @Injectable()
 export class UserRepository extends Repository<User> {
@@ -9,7 +9,7 @@ export class UserRepository extends Repository<User> {
     super(User, dataSource.createEntityManager());
   }
 
-  async createUser(user: CreateUserDto): Promise<User> {
+  async createUser(user: UserInterface): Promise<User> {
     return await this.save(user);
   }
 
@@ -17,7 +17,7 @@ export class UserRepository extends Repository<User> {
     return await this.find();
   }
 
-  async updateUser(id: number, user: CreateUserDto): Promise<User | null> {
+  async updateUser(id: number, user: UserInterface): Promise<User | null> {
     const result = await this.createQueryBuilder()
       .update(user)
       .set({ ...user })
