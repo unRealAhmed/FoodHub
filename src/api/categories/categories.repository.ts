@@ -1,8 +1,8 @@
 import { DataSource, Repository } from 'typeorm';
 import { Category } from './categories.entity';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateCategoryDto } from './dtos/create-category.dto';
 import { CATEGORY_NOT_FOUND } from 'src/common/assets/messages';
+import { CategoryInterface } from 'src/common/interfaces/categoryy.interface';
 
 @Injectable()
 export class CategoryRepository extends Repository<Category> {
@@ -10,7 +10,7 @@ export class CategoryRepository extends Repository<Category> {
     super(Category, dataSource.createEntityManager());
   }
 
-  async createCategory(category: CreateCategoryDto): Promise<Category> {
+  async createCategory(category: CategoryInterface): Promise<Category> {
     return this.save(category);
   }
 
@@ -28,7 +28,7 @@ export class CategoryRepository extends Repository<Category> {
 
   async updateCategory(
     id: number,
-    category: CreateCategoryDto,
+    category: CategoryInterface,
   ): Promise<Category | null> {
     // console.log(category);
 
