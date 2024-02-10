@@ -3,24 +3,38 @@ import {
   NestInterceptor,
   ExecutionContext,
   CallHandler,
-  Logger,
 } from '@nestjs/common';
-import { Observable, tap } from 'rxjs';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import winston, { createLogger, transports, format } from 'winston';
+import * as path from 'path';
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
-  private readonly logger: Logger = new Logger();
+  private readonly logger: winston.Logger;
+
+  constructor() {
+    const logsPath = path.join('logs', 'success.log');
+    this.logger = createLogger({
+      level: 'info',
+      format: format.combine(
+        format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+        format.json(),
+      ),
+      transports: [new transports.File({ filename: logsPath })],
+    });
+  }
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const start = Date.now();
     return next.handle().pipe(
       tap(() => {
-        this.Logging(context, start);
+        this.logging(context, start);
       }),
     );
   }
 
-  Logging(context: ExecutionContext, start: number) {
+  logging(context: ExecutionContext, start: number) {
     const ctx = context.switchToHttp();
     const request = ctx.getRequest();
     const response = ctx.getResponse();
@@ -31,8 +45,8 @@ export class LoggingInterceptor implements NestInterceptor {
     const userAgent = request.get('User-Agent');
     const responseTime = Date.now() - start;
 
-    const logMessage = `${new Date().toISOString()} ${httpMethod} ${URL} ${statusCode} responseTime: ${responseTime}ms ip:${ip} using ${userAgent}`;
+    const logMessage = `${httpMethod} ${URL} ${statusCode} responseTime: ${responseTime}ms ip:${ip} using ${userAgent}`;
 
-    return this.logger.log(logMessage);
+    this.logger.info({ logMessage });
   }
 }
