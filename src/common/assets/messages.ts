@@ -47,3 +47,10 @@ export const ITEM_ASSOCIATED_WITH_CATEGORY_SUCCESSFULLY =
 export const LIST_ITEMS_IN_CATEGORY = 'List of items in a category.';
 export const ITEM_DELETED_FROM_CATEGORY_SUCCESSFULLY =
   'Item deleted from the category successfully.';
+
+//CATEGORY MESSAGES
+export const LIST_ALL_CATEGORIES = 'List of all categories.';
+export const CATEGORY_FOUND = 'Category found.';
+export const CATEGORY_CREATED_SUCCESSFULLY = 'Category created successfully.';
+export const CATEGORY_UPDATED_SUCCESSFULLY = 'Category updated successfully.';
+export const CATEGORY_DELETED_SUCCESSFULLY = 'Category deleted successfully.';
