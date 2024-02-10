@@ -1,18 +1,17 @@
 import { DataSource, Repository } from 'typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateRestaurantDto } from './dtos/create-restaurant.dto';
 import { Restaurant } from './restaurant.entity';
 import { RESTAURANT_NOT_FOUND } from '../../common/assets/messages';
-// import { Pagination } from 'src/types/pagination.interface';
 import { PaginationDto } from 'src/types/paginated.dto';
 import { IFilterRestaurant } from './dtos/filter-restaurants.dto';
+import { Restaurant as RestaurantInterface } from 'src/common/interfaces/restaurant.interface';
 
 @Injectable()
 export class RestaurantRepository extends Repository<Restaurant> {
   constructor(private readonly dataSource: DataSource) {
     super(Restaurant, dataSource.createEntityManager());
   }
-  async createRestaurant(restaurant: CreateRestaurantDto): Promise<Restaurant> {
+  async createRestaurant(restaurant: RestaurantInterface): Promise<Restaurant> {
     return this.save(restaurant);
   }
 
@@ -65,7 +64,7 @@ export class RestaurantRepository extends Repository<Restaurant> {
 
   async updateRestaurant(
     id: number,
-    restaurant: CreateRestaurantDto,
+    restaurant: RestaurantInterface,
   ): Promise<Restaurant | null> {
     const result = await this.createQueryBuilder()
       .update(Restaurant)
