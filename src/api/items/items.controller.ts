@@ -20,14 +20,20 @@ import {
   ApiParam,
   ApiOperation,
 } from '@nestjs/swagger';
+import { PaginationDto } from 'src/types/paginated.dto';
 import { CategoryItem } from '../category-item/category-item.entity';
 import { CreateCategoryItemDto } from '../category-item/dtos/create-category-item.dto';
-// import { Paginate } from 'src/decorators/paginate.decorator';
-// import { PaginatedDto } from 'src/types/paginated.dto';
-// import { Pagination } from 'src/types/pagination.interface';
-// import { ItemsSearchCriteria } from 'src/helpers/filter';
-import { PaginationDto } from 'src/types/paginated.dto';
 import { IFilterItems } from './dtos/filter-items.dto';
+import {
+  ITEM_FOUND,
+  LIST_ALL_ITEMS,
+  ITEM_ASSOCIATED_WITH_CATEGORY_SUCCESSFULLY,
+  ITEM_CREATED_SUCCESSFULLY,
+  ITEM_DELETED_FROM_CATEGORY_SUCCESSFULLY,
+  ITEM_DELETED_SUCCESSFULLY,
+  ITEM_UPDATED_SUCCESSFULLY,
+  LIST_ITEMS_IN_CATEGORY,
+} from 'src/common/assets/messages';
 
 @Controller('items')
 @ApiTags('Items')
@@ -37,21 +43,24 @@ export class ItemsController {
   @Post()
   @ApiOperation({
     summary: 'Create a new item',
-    description: 'Endpoint to create a new item.',
+    description: 'create a new item.',
   })
   @ApiBody({ type: UpdateItemDto })
   @ApiCreatedResponse({
     description: 'Item created successfully.',
     type: Item,
   })
-  async createItem(@Body() createItemDto: UpdateItemDto): Promise<Item> {
-    return this.itemsService.createItem(createItemDto);
+  async createItem(
+    @Body() createItemDto: UpdateItemDto,
+  ): Promise<{ message: string; data: Item }> {
+    const data = await this.itemsService.createItem(createItemDto);
+    return { message: ITEM_CREATED_SUCCESSFULLY, data };
   }
 
   @Get()
   @ApiOperation({
     summary: 'Get a list of all items',
-    description: 'Endpoint to retrieve a list of all items.',
+    description: 'retrieve a list of all items.',
   })
   @ApiOkResponse({
     description: 'List of all items.',
@@ -62,19 +71,19 @@ export class ItemsController {
     @Query() filter: IFilterItems,
     @Query('page') page: number,
     @Query('limit') limit: number,
-  ): Promise<{ items: Item[]; count: number }> {
+  ): Promise<{ message: string; data: { items: Item[]; count: number } }> {
     const pagination: PaginationDto = { page, limit };
     const { items, count } = await this.itemsService.getAllItems(
       filter,
       pagination,
     );
-    return { items, count };
+    return { message: LIST_ALL_ITEMS, data: { items, count } };
   }
 
   @Get(':name')
   @ApiOperation({
     summary: 'Get an item by name',
-    description: 'Endpoint to retrieve an item by its name.',
+    description: 'retrieve an item by its name.',
   })
   @ApiOkResponse({
     description: 'Item found.',
@@ -83,14 +92,17 @@ export class ItemsController {
   @ApiNotFoundResponse({
     description: 'Item not found.',
   })
-  async getItemByName(@Param('name') name: string): Promise<Item | null> {
-    return this.itemsService.getItemByName(name);
+  async getItemByName(
+    @Param('name') name: string,
+  ): Promise<{ message: string; data: Item | null }> {
+    const data = await this.itemsService.getItemByName(name);
+    return { message: ITEM_FOUND, data };
   }
 
   @Put(':id')
   @ApiOperation({
     summary: 'Update an item by ID',
-    description: 'Endpoint to update an item by its ID.',
+    description: 'update an item by its ID.',
   })
   @ApiParam({ name: 'id', description: 'Item ID' })
   @ApiBody({ type: UpdateItemDto })
@@ -104,14 +116,15 @@ export class ItemsController {
   async updateItem(
     @Param('id') id: number,
     @Body() updateItemDto: UpdateItemDto,
-  ): Promise<Item> {
-    return this.itemsService.updateItem(id, updateItemDto);
+  ): Promise<{ message: string; data: Item }> {
+    const data = await this.itemsService.updateItem(id, updateItemDto);
+    return { message: ITEM_UPDATED_SUCCESSFULLY, data };
   }
 
   @Delete(':id')
   @ApiOperation({
     summary: 'Delete an item by ID',
-    description: 'Endpoint to delete an item by its ID.',
+    description: 'delete an item by its ID.',
   })
   @ApiParam({ name: 'id', description: 'Item ID' })
   @ApiOkResponse({
@@ -120,14 +133,15 @@ export class ItemsController {
   @ApiNotFoundResponse({
     description: 'Item not found.',
   })
-  async deleteItem(@Param('id') id: number): Promise<void> {
-    return this.itemsService.deleteItem(id);
+  async deleteItem(@Param('id') id: number): Promise<{ message: string }> {
+    await this.itemsService.deleteItem(id);
+    return { message: ITEM_DELETED_SUCCESSFULLY };
   }
 
   @Post('/associate-item')
   @ApiOperation({
     summary: 'Associate an item with a category',
-    description: 'Endpoint to associate an item with a category.',
+    description: 'associate an item with a category.',
   })
   @ApiBody({
     type: CreateCategoryItemDto,
@@ -149,15 +163,18 @@ export class ItemsController {
   })
   async associateItemWithCategory(
     @Body() createCategoryItemDto: CreateCategoryItemDto,
-  ): Promise<CategoryItem> {
+  ): Promise<{ message: string; data: CategoryItem }> {
     console.log(createCategoryItemDto);
-    return this.itemsService.associateItemWithCategory(createCategoryItemDto);
+    const data = await this.itemsService.associateItemWithCategory(
+      createCategoryItemDto,
+    );
+    return { message: ITEM_ASSOCIATED_WITH_CATEGORY_SUCCESSFULLY, data };
   }
 
   @Get(':categoryName/items')
   @ApiOperation({
     summary: 'Get all items in a category',
-    description: 'Endpoint to retrieve all items in a category.',
+    description: 'retrieve all items in a category.',
   })
   @ApiOkResponse({
     description: 'List of items in a category.',
@@ -176,15 +193,22 @@ export class ItemsController {
     @Param('categoryName') categoryName: string,
     @Query('page') page: number,
     @Query('limit') limit: number,
-  ): Promise<{ category_items: CategoryItem[]; count: number }> {
+  ): Promise<{
+    message: string;
+    data: { category_items: CategoryItem[]; count: number };
+  }> {
     const pagination: PaginationDto = { page, limit };
-    return this.itemsService.getAllItemsInCategory(categoryName, pagination);
+    const data = await this.itemsService.getAllItemsInCategory(
+      categoryName,
+      pagination,
+    );
+    return { message: LIST_ITEMS_IN_CATEGORY, data };
   }
 
   @Delete(':categoryId/items/:itemId')
   @ApiOperation({
     summary: 'Delete an item from a category',
-    description: 'Endpoint to delete an item from a category.',
+    description: 'delete an item from a category.',
   })
   @ApiOkResponse({
     description: 'Item deleted from the category successfully.',
@@ -200,7 +224,10 @@ export class ItemsController {
     name: 'itemId',
     description: 'The ID of the item to delete.',
   })
-  async deleteItemFromCategory(@Param('itemId') itemId: number): Promise<void> {
-    return this.itemsService.deleteItemOnSpecificCategory(itemId);
+  async deleteItemFromCategory(
+    @Param('itemId') itemId: number,
+  ): Promise<{ message: string }> {
+    await this.itemsService.deleteItemOnSpecificCategory(itemId);
+    return { message: ITEM_DELETED_FROM_CATEGORY_SUCCESSFULLY };
   }
 }
