@@ -1,11 +1,13 @@
 import { DataSource, Repository } from 'typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateMenuDto } from './dtos/create-menu.dto';
-import { UpdateMenuDto } from './dtos/update-menu.dto';
 import { Menu } from './menus.entity';
 import { MENU_NOT_FOUND } from 'src/common/assets/messages';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Restaurant } from '../restaurants/restaurant.entity';
+import {
+  CreateMenuInterface,
+  UpdateMenuInterface,
+} from 'src/common/interfaces/menu.interface';
 
 @Injectable()
 export class MenusRepository extends Repository<Menu> {
@@ -17,7 +19,7 @@ export class MenusRepository extends Repository<Menu> {
     super(Menu, dataSource.createEntityManager());
   }
 
-  async createMenu(menu: CreateMenuDto): Promise<Menu> {
+  async createMenu(menu: CreateMenuInterface): Promise<Menu> {
     const { restaurantId } = menu;
 
     const existingRestaurant = await this.restaurantRepository.findOne({
@@ -50,7 +52,10 @@ export class MenusRepository extends Repository<Menu> {
       .getOne();
   }
 
-  async updateMenu(id: number, menu: UpdateMenuDto): Promise<Menu | null> {
+  async updateMenu(
+    id: number,
+    menu: UpdateMenuInterface,
+  ): Promise<Menu | null> {
     const result = await this.createQueryBuilder()
       .update(Menu)
       .set({ ...menu })
