@@ -21,6 +21,13 @@ import {
   ApiParam,
   ApiNotFoundResponse,
 } from '@nestjs/swagger';
+import {
+  CATEGORY_FOUND,
+  CATEGORY_CREATED_SUCCESSFULLY,
+  CATEGORY_DELETED_SUCCESSFULLY,
+  LIST_ALL_CATEGORIES,
+  CATEGORY_UPDATED_SUCCESSFULLY,
+} from 'src/common/assets/messages';
 
 @Controller('categories')
 @ApiTags('Categories')
@@ -30,21 +37,22 @@ export class CategoriesController {
   @Get()
   @ApiOperation({
     summary: 'Get all categories',
-    description: 'Endpoint to retrieve a list of all categories.',
+    description: 'retrieve a list of all categories.',
   })
   @ApiOkResponse({
     description: 'List of all categories.',
     type: Category,
     isArray: true,
   })
-  async getAllCategories(): Promise<Category[]> {
-    return this.categoryService.getAllCategories();
+  async getAllCategories(): Promise<{ message: string; data: Category[] }> {
+    const data = await this.categoryService.getAllCategories();
+    return { message: LIST_ALL_CATEGORIES, data };
   }
 
   @Get(':name')
   @ApiOperation({
     summary: 'Get a category by name',
-    description: 'Endpoint to retrieve a category by its name.',
+    description: 'retrieve a category by its name.',
   })
   @ApiOkResponse({
     description: 'Category found.',
@@ -59,14 +67,15 @@ export class CategoriesController {
   })
   async getCategoryByName(
     @Param('name') name: string,
-  ): Promise<Category | null> {
-    return this.categoryService.getCategoryByName(name);
+  ): Promise<{ message: string; data: Category | null }> {
+    const category = await this.categoryService.getCategoryByName(name);
+    return { message: CATEGORY_FOUND, data: category };
   }
 
   @Post()
   @ApiOperation({
     summary: 'Create a new category',
-    description: 'Endpoint to create a new category.',
+    description: 'create a new category.',
   })
   @ApiBody({
     type: CreateCategoryDto,
@@ -87,14 +96,15 @@ export class CategoriesController {
   })
   async createCategory(
     @Body() createCategoryDto: CreateCategoryDto,
-  ): Promise<Category> {
-    return this.categoryService.createCategory(createCategoryDto);
+  ): Promise<{ message: string; data: Category }> {
+    const data = await this.categoryService.createCategory(createCategoryDto);
+    return { message: CATEGORY_CREATED_SUCCESSFULLY, data };
   }
 
   @Put(':id')
   @ApiOperation({
     summary: 'Update a category by ID',
-    description: 'Endpoint to update a category by its ID.',
+    description: 'update a category by its ID.',
   })
   @ApiBody({
     type: CreateCategoryDto,
@@ -120,14 +130,18 @@ export class CategoriesController {
   async updateCategory(
     @Param('id') id: number,
     @Body() updateCategoryDto: CreateCategoryDto,
-  ): Promise<Category> {
-    return this.categoryService.updateCategory(id, updateCategoryDto);
+  ): Promise<{ message: string; data: Category | null }> {
+    const category = await this.categoryService.updateCategory(
+      id,
+      updateCategoryDto,
+    );
+    return { message: CATEGORY_UPDATED_SUCCESSFULLY, data: category };
   }
 
   @Delete(':id')
   @ApiOperation({
     summary: 'Delete a category by ID',
-    description: 'Endpoint to delete a category by its ID.',
+    description: 'delete a category by its ID.',
   })
   @ApiOkResponse({
     description: 'Category deleted successfully.',
@@ -139,7 +153,8 @@ export class CategoriesController {
     name: 'id',
     description: 'The ID of the category.',
   })
-  async deleteCategory(@Param('id') id: number): Promise<void> {
-    return this.categoryService.deleteCategory(id);
+  async deleteCategory(@Param('id') id: number): Promise<{ message: string }> {
+    await this.categoryService.deleteCategory(id);
+    return { message: CATEGORY_DELETED_SUCCESSFULLY };
   }
 }
