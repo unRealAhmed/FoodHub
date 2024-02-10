@@ -22,6 +22,13 @@ import {
   ApiOperation,
   ApiParam,
 } from '@nestjs/swagger';
+import {
+  MENU_CREATED_SUCCESSFULLY,
+  LIST_OF_ALL_MENUS,
+  MENU_FOUND,
+  MENU_UPDATED_SUCCESSFULLY,
+  MENU_DELETED_SUCCESSFULLY,
+} from 'src/common/assets/messages';
 
 @Controller('menus')
 @ApiTags('Menus')
@@ -31,21 +38,22 @@ export class MenusController {
   @Get()
   @ApiOperation({
     summary: 'Get a list of all menus',
-    description: 'Endpoint to retrieve a list of all menus.',
+    description: 'retrieve a list of all menus.',
   })
   @ApiOkResponse({
     description: 'List of all menus.',
     type: Menu,
     isArray: true,
   })
-  async getAllMenus(): Promise<Menu[]> {
-    return this.menusService.getAllMenus();
+  async getAllMenus(): Promise<{ message: string; data: Menu[] }> {
+    const data = await this.menusService.getAllMenus();
+    return { message: LIST_OF_ALL_MENUS, data };
   }
 
   @Get(':id')
   @ApiOperation({
     summary: 'Get a menu by ID',
-    description: 'Endpoint to retrieve a menu by its ID.',
+    description: 'retrieve a menu by its ID.',
   })
   @ApiOkResponse({
     description: 'Menu found.',
@@ -58,14 +66,17 @@ export class MenusController {
     name: 'id',
     description: 'ID of the menu',
   })
-  async getMenuById(@Param('id') id: number): Promise<Menu> {
-    return this.menusService.getMenuById(id);
+  async getMenuById(
+    @Param('id') id: number,
+  ): Promise<{ message: string; data: Menu }> {
+    const data = await this.menusService.getMenuById(id);
+    return { message: MENU_FOUND, data };
   }
 
   @Post()
   @ApiOperation({
     summary: 'Create a new menu',
-    description: 'Endpoint to create a new menu.',
+    description: 'create a new menu.',
   })
   @ApiBody({ type: CreateMenuDto })
   @ApiCreatedResponse({
@@ -75,14 +86,17 @@ export class MenusController {
   @ApiBadRequestResponse({
     description: 'Bad request. Check the request body.',
   })
-  async createMenu(@Body() createMenuDto: CreateMenuDto): Promise<Menu> {
-    return this.menusService.createMenu(createMenuDto);
+  async createMenu(
+    @Body() createMenuDto: CreateMenuDto,
+  ): Promise<{ message: string; data: Menu }> {
+    const data = await this.menusService.createMenu(createMenuDto);
+    return { message: MENU_CREATED_SUCCESSFULLY, data };
   }
 
   @Patch(':id')
   @ApiOperation({
     summary: 'Update a menu by ID',
-    description: 'Endpoint to update a menu by its ID.',
+    description: 'update a menu by its ID.',
   })
   @ApiBody({ type: UpdateMenuDto })
   @ApiOkResponse({
@@ -99,14 +113,15 @@ export class MenusController {
   async updateMenu(
     @Param('id') id: number,
     @Body() updateMenuDto: UpdateMenuDto,
-  ): Promise<Menu> {
-    return this.menusService.updateMenu(id, updateMenuDto);
+  ): Promise<{ message: string; data: Menu }> {
+    const data = await this.menusService.updateMenu(id, updateMenuDto);
+    return { message: MENU_UPDATED_SUCCESSFULLY, data };
   }
 
   @Delete(':id')
   @ApiOperation({
     summary: 'Delete a menu by ID',
-    description: 'Endpoint to delete a menu by its ID.',
+    description: 'delete a menu by its ID.',
   })
   @ApiOkResponse({
     description: 'Menu deleted successfully.',
@@ -118,7 +133,8 @@ export class MenusController {
     name: 'id',
     description: 'ID of the menu',
   })
-  async deleteMenu(@Param('id') id: number): Promise<void> {
-    return this.menusService.deleteMenu(id);
+  async deleteMenu(@Param('id') id: number): Promise<{ message: string }> {
+    await this.menusService.deleteMenu(id);
+    return { message: MENU_DELETED_SUCCESSFULLY };
   }
 }
