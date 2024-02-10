@@ -1,4 +1,4 @@
-import { ApiProperty, ApiBody } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, IsNumber, Min } from 'class-validator';
 
 export class UpdateItemDto {

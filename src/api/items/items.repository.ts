@@ -1,11 +1,10 @@
 import { DataSource, In, Repository } from 'typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { UpdateItemDto } from './dtos/update-item.dto';
 import { Item } from './items.entity';
-import { CreateItemDto } from './dtos/create-item.dto';
 import { ITEM_NOT_FOUND_ID } from 'src/common/assets/messages';
 import { PaginationDto } from 'src/types/paginated.dto';
 import { IFilterItems } from './dtos/filter-items.dto';
+import { ItemInterface } from 'src/common/interfaces/item.interface';
 
 @Injectable()
 export class ItemsRepository extends Repository<Item> {
@@ -13,7 +12,7 @@ export class ItemsRepository extends Repository<Item> {
     super(Item, dataSource.createEntityManager());
   }
 
-  async createItem(item: CreateItemDto): Promise<Item> {
+  async createItem(item: ItemInterface): Promise<Item> {
     return this.save(item);
   }
 
@@ -43,7 +42,7 @@ export class ItemsRepository extends Repository<Item> {
     return this.findOne({ where: { name } });
   }
 
-  async updateItem(id: number, item: UpdateItemDto): Promise<Item | null> {
+  async updateItem(id: number, item: ItemInterface): Promise<Item | null> {
     const result = await this.createQueryBuilder('item')
       .update(Item)
       .set({ ...item })
