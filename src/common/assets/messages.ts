@@ -23,12 +23,6 @@ export const RESTAURANT_UPDATED_SUCCESSFULLY =
 export const RESTAURANT_DELETED_SUCCESSFULLY =
   'Restaurant deleted successfully.';
 
-//ORDER MESSAGES
-export const ORDER_FULFILLED = 'fulfilled.';
-export const ORDER_IN_PROGRESS = 'inProgress';
-export const ORDER_CANCELLED_BY_USER = 'cancelledByUser';
-export const ORDER_CANCELLED_BY_RESTAURANT = 'cancelledByRestaurant';
-
 //MENU MESSAGES
 export const LIST_OF_ALL_MENUS = 'List of all menus.';
 export const MENU_FOUND = 'Menu found.';
@@ -59,3 +53,13 @@ export const CATEGORY_DELETED_SUCCESSFULLY = 'Category deleted successfully.';
 export const USER_CREATED_SUCCESSFULLY = 'User created successfully.';
 export const LIST_ALL_USERS = 'List of all users.';
 export const USER_UPDATED_SUCCESSFULLY = 'User updated successfully.';
+
+//ORDER MESSAGES
+export const ORDER_CREATED_SUCCESSFULLY = 'Order created successfully.';
+export const LIST_ALL_ORDERS = 'List of all orders.';
+export const ORDER_FOUND = 'Order found.';
+export const ORDER_CANCELLED_SUCCESSFULLY = 'Order cancelled successfully.';
+export const ORDER_FULFILLED = 'fulfilled.';
+export const ORDER_IN_PROGRESS = 'inProgress';
+export const ORDER_CANCELLED_BY_USER = 'cancelledByUser';
+export const ORDER_CANCELLED_BY_RESTAURANT = 'cancelledByRestaurant';
