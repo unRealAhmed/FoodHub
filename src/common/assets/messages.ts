@@ -54,3 +54,8 @@ export const CATEGORY_FOUND = 'Category found.';
 export const CATEGORY_CREATED_SUCCESSFULLY = 'Category created successfully.';
 export const CATEGORY_UPDATED_SUCCESSFULLY = 'Category updated successfully.';
 export const CATEGORY_DELETED_SUCCESSFULLY = 'Category deleted successfully.';
+
+//USER MESSAGES
+export const USER_CREATED_SUCCESSFULLY = 'User created successfully.';
+export const LIST_ALL_USERS = 'List of all users.';
+export const USER_UPDATED_SUCCESSFULLY = 'User updated successfully.';
