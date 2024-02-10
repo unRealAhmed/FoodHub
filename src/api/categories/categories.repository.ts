@@ -2,7 +2,7 @@ import { DataSource, Repository } from 'typeorm';
 import { Category } from './categories.entity';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CATEGORY_NOT_FOUND } from 'src/common/assets/messages';
-import { CategoryInterface } from 'src/common/interfaces/categoryy.interface';
+import { CategoryInterface } from 'src/common/interfaces/category.interface';
 
 @Injectable()
 export class CategoryRepository extends Repository<Category> {
