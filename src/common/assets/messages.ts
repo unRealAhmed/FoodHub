@@ -35,3 +35,15 @@ export const MENU_FOUND = 'Menu found.';
 export const MENU_CREATED_SUCCESSFULLY = 'Menu created successfully.';
 export const MENU_UPDATED_SUCCESSFULLY = 'Menu updated successfully.';
 export const MENU_DELETED_SUCCESSFULLY = 'Menu deleted successfully.';
+
+//ITEMS
+export const ITEM_CREATED_SUCCESSFULLY = 'Item created successfully.';
+export const LIST_ALL_ITEMS = 'List of all items.';
+export const ITEM_FOUND = 'Item found.';
+export const ITEM_UPDATED_SUCCESSFULLY = 'Item updated successfully.';
+export const ITEM_DELETED_SUCCESSFULLY = 'Item deleted successfully.';
+export const ITEM_ASSOCIATED_WITH_CATEGORY_SUCCESSFULLY =
+  'Item associated with the category successfully.';
+export const LIST_ITEMS_IN_CATEGORY = 'List of items in a category.';
+export const ITEM_DELETED_FROM_CATEGORY_SUCCESSFULLY =
+  'Item deleted from the category successfully.';
