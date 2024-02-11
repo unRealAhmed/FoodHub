@@ -1,4 +1,10 @@
-import { ExceptionFilter, Catch, ArgumentsHost } from '@nestjs/common';
+import {
+  ExceptionFilter,
+  Catch,
+  ArgumentsHost,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import * as winston from 'winston';
 import * as path from 'path';
 
@@ -21,7 +27,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const response = httpHost.getResponse();
     const httpMethod = request.method;
     const URL = request.url;
-    const statusCode = response.statusCode;
+    const statusCode =
+      exception instanceof HttpException
+        ? exception.getStatus()
+        : HttpStatus.INTERNAL_SERVER_ERROR;
     const ip = request.ip;
     const userAgent = request.get('User-Agent');
 
