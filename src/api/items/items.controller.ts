@@ -19,6 +19,7 @@ import {
   ApiNotFoundResponse,
   ApiParam,
   ApiOperation,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { PaginationDto } from 'src/types/paginated.dto';
 import { CategoryItem } from '../category-item/category-item.entity';
@@ -66,6 +67,18 @@ export class ItemsController {
     description: 'List of all items.',
     type: Item,
     isArray: true,
+  })
+  @ApiQuery({
+    name: 'page',
+    type: Number,
+    description: 'Page number',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'limit',
+    type: Number,
+    description: 'Number of items per page',
+    required: false,
   })
   async getAllItems(
     @Query() filter: IFilterItems,

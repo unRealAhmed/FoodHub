@@ -3,23 +3,30 @@ version: '3'
 services:
   database:
     image: 'postgres:latest'
-    ports:
-      - 8000:8000
-    env_file:
-      - .env
+    build: ./postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: H9C12500
+      POSTGRES_URL: postgres://admin:password@127.0.0.1:8000/restaurants
+      POSTGRES_DB: restaurants
+      POSTGRES_HOST: 127.0.0.1
     networks:
       - postgres-network
     volumes:
       - ./db-data/:/var/lib/postgresql/data/
+    ports:
+      - 8000:8000
 
   backend:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: ./
+    volumes:
+      - ./:/usr/src/app/
+    command: npm start
+    working_dir: /usr/src/app
     ports:
-      - 3000:3000
+      - '3000:3000'
     environment:
-      - PORT=3000
+      POSTGRES_URI: postgres://admin:password@127.0.0.1:8000/restaurants
     networks:
       - postgres-network
 
