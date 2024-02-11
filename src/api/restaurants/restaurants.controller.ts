@@ -22,6 +22,7 @@ import {
   ApiOperation,
   ApiNotFoundResponse,
   ApiParam,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { PaginationDto } from 'src/types/paginated.dto';
 import { IFilterRestaurant } from './dtos/filter-restaurants.dto';
@@ -81,6 +82,18 @@ export class RestaurantsController {
     type: Restaurant,
     isArray: true,
     status: HttpStatus.OK,
+  })
+  @ApiQuery({
+    name: 'page',
+    type: Number,
+    description: 'Page number',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'limit',
+    type: Number,
+    description: 'Number of items per page',
+    required: false,
   })
   async getAllRestaurants(
     @Query() filter: IFilterRestaurant,
