@@ -7,8 +7,9 @@ import { HttpExceptionFilter } from './common/interceptors/http-exception.filter
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    bufferLogs: true,
+    bufferLogs: false,
   });
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
