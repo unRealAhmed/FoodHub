@@ -16,13 +16,20 @@ export class CategoryService {
   async getAllCategories(): Promise<Category[]> {
     return this.categoryRepository.getAllCategories();
   }
-
   async getCategoryByName(name: string): Promise<Category | null> {
-    return this.categoryRepository.getCategoryByName(name);
+    const category = await this.categoryRepository.getCategoryByName(name);
+    if (!category) {
+      throw new NotFoundException(`category ${name} not found`);
+    }
+    return category;
   }
 
   async getCategoryById(id: number): Promise<Category | null> {
-    return this.categoryRepository.findOne({ where: { id } });
+    const category = this.categoryRepository.getCategoryById(id);
+    if (!category) {
+      throw new NotFoundException(`category ${id} not found`);
+    }
+    return category;
   }
 
   async updateCategory(
