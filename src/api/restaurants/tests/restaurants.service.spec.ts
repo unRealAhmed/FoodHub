@@ -45,8 +45,9 @@ describe('RestaurantsService', () => {
       mockRestaurantRepository.getAllRestaurants.mockReturnValueOnce(
         expectedResult,
       );
+      const filter = {};
 
-      const result = await service.getAllRestaurants();
+      const result = await service.getAllRestaurants(filter);
 
       expect(result).toEqual(expectedResult);
       expect(mockRestaurantRepository.getAllRestaurants).toHaveBeenCalled();
@@ -59,7 +60,9 @@ describe('RestaurantsService', () => {
         expectedResult,
       );
 
-      const result = await service.getAllRestaurants();
+      const filter = {};
+
+      const result = await service.getAllRestaurants(filter);
 
       expect(result).toEqual(expectedResult);
       expect(mockRestaurantRepository.getAllRestaurants).toHaveBeenCalled();

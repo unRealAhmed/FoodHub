@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import * as winston from 'winston';
 import * as path from 'path';
+import { Request, Response } from 'express';
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -21,10 +22,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
     });
   }
 
-  catch(exception: any, host: ArgumentsHost) {
+  catch(exception: HttpException, host: ArgumentsHost) {
     const httpHost = host.switchToHttp();
-    const request = httpHost.getRequest();
-    const response = httpHost.getResponse();
+    const request = httpHost.getRequest<Request>();
+    const response = httpHost.getResponse<Response>();
     const httpMethod = request.method;
     const URL = request.url;
     const statusCode =
